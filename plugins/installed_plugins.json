@@ -1,0 +1,75 @@
+{
+  "version": 2,
+  "plugins": {
+    "superpowers@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\claude-plugins-official\\superpowers\\7.0.0",
+        "version": "7.0.0",
+        "installedAt": "2026-10-23T09:04:06.691Z",
+        "lastUpdated": "2026-10-23T09:04:06.691Z",
+        "gitCommitSha": "bb92a77741419a4ab5f06e711a283343f1ada0c3"
+      }
+    ],
+    "replica-skill@replica-skill": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\replica-skill\\replica-skill\\1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-10-23T09:06:44.729Z",
+        "lastUpdated": "2026-10-23T09:06:44.729Z",
+        "gitCommitSha": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+      }
+    ],
+    "andrej-karpathy-skills@karpathy-skills": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\karpathy-skills\\andrej-karpathy-skills\\1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-10-23T09:07:47.074Z",
+        "lastUpdated": "2026-10-23T09:07:47.074Z",
+        "gitCommitSha": "2c606141936f1eeef17fa3043a72095b4765b9c2"
+      }
+    ],
+    "claude-code-setup@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\claude-plugins-official\\claude-code-setup\\1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-10-23T09:09:34.299Z",
+        "lastUpdated": "2026-10-23T09:09:34.299Z",
+        "gitCommitSha": "465f09344424225c25d438f2e052732c3d688d2f"
+      }
+    ],
+    "caveman@caveman": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\caveman\\caveman\\4.0.1",
+        "version": "4.0.1",
+        "installedAt": "2026-10-23T09:10:22.694Z",
+        "lastUpdated": "2026-10-23T09:10:22.694Z",
+        "gitCommitSha": "b4531dfc05a3ef0ba93b57e8bfa5f48564a4b4d6"
+      }
+    ],
+    "skill-creator@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\claude-plugins-official\\skill-creator\\465f09344424",
+        "version": "465f09344424",
+        "installedAt": "2026-10-23T09:58:54.133Z",
+        "lastUpdated": "2026-10-23T09:58:54.133Z",
+        "gitCommitSha": "465f09344424225c25d438f2e052732c3d688d2f"
+      }
+    ],
+    "frontend-design@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\claude-plugins-official\\frontend-design\\465f09344424",
+        "version": "465f09344424",
+        "installedAt": "2026-10-23T09:58:57.748Z",
+        "lastUpdated": "2026-10-23T09:58:57.748Z",
+        "gitCommitSha": "465f09344424225c25d438f2e052732c3d688d2f"
+      }
+    ]
+  }
+}

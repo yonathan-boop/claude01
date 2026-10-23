@@ -1,0 +1,1 @@
+- [User Preferences](user-preferences.md) — environment, CLI preference, and friction-free workflow

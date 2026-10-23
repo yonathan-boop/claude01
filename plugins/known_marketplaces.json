@@ -1,0 +1,34 @@
+{
+  "claude-plugins-official": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    "installLocation": "C:\\Users\\yonat\\.claude\\plugins\\marketplaces\\claude-plugins-official",
+    "lastUpdated": "2026-10-23T10:40:37.888Z"
+  },
+  "replica-skill": {
+    "source": {
+      "source": "github",
+      "repo": "Jakeschincariol/replica-skill"
+    },
+    "installLocation": "C:\\Users\\yonat\\.claude\\plugins\\marketplaces\\replica-skill",
+    "lastUpdated": "2026-10-23T09:06:39.848Z"
+  },
+  "karpathy-skills": {
+    "source": {
+      "source": "github",
+      "repo": "multica-ai/andrej-karpathy-skills"
+    },
+    "installLocation": "C:\\Users\\yonat\\.claude\\plugins\\marketplaces\\karpathy-skills",
+    "lastUpdated": "2026-10-23T09:07:28.789Z"
+  },
+  "caveman": {
+    "source": {
+      "source": "github",
+      "repo": "JuliusBrussee/caveman"
+    },
+    "installLocation": "C:\\Users\\yonat\\.claude\\plugins\\marketplaces\\caveman",
+    "lastUpdated": "2026-10-23T09:10:10.453Z"
+  }
+}

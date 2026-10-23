@@ -1,0 +1,30 @@
+# Secrets & sensitive settings
+settings.json
+
+# Claude runtime sessions, transcripts & cache
+cache/
+backups/
+downloads/
+file-history/
+paste-cache/
+session-env/
+sessions/
+state/
+history.jsonl
+*.jsonl
+*.bin
+
+# Ephemeral projects session logs and tool results
+projects/*/
+!projects/C--Users-yonat/memory/
+
+# Plugin cache & marketplaces (downloaded dynamically)
+plugins/cache/
+plugins/data/
+plugins/marketplaces/
+plugins/.last_inuse_sweep
+plugins/plugin-directory-cache-v2.json
+
+# Flags & local runtime markers
+.caveman-active
+.last-cleanup
