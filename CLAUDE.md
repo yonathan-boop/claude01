@@ -84,6 +84,7 @@ Behavioral guidelines to reduce common LLM coding mistakes:
 - **Learn from Debugging & Non-Trivial Solutions**: When solving tricky bugs, Windows/PowerShell edge cases, or API quirks:
   1. Record the root cause and the verified solution pattern to persistent memory.
   2. Check existing memories before attempting repeated fixes in future sessions.
+- **Autonomous Auto-Recording (No-Ask Handoff)**: Whenever a feature, deployment, or architectural change is completed, silently persist the key state/architecture to `memory/` and update `MEMORY.md` without waiting for the user to end the session or ask for a handoff.
 - **Proactive Skill Harvesting**:
   - When observing a repeated workflow pattern (>=2 times), use `task-observer` and `skill-creator` to formalize it into a reusable skill.
 

@@ -28,3 +28,5 @@ plugins/plugin-directory-cache-v2.json
 # Flags & local runtime markers
 .caveman-active
 .last-cleanup
+.last-update-result.json
+daemon/
