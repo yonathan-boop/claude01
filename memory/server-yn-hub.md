@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: a6562376-15b8-410d-9b8f-e803f7a93d16
-  modified: 2026-10-24T03:08:31.952Z
+  modified: 2026-10-24T06:17:19.782Z
 ---
 
 Server YN berjalan di port 8900 dan di-expose publik via Cloudflare Tunnel (`https://serveryn.my.id`).
@@ -48,7 +48,17 @@ Server YN berjalan di port 8900 dan di-expose publik via Cloudflare Tunnel (`htt
    - Troubleshooting client: jika blank putih di PC luar saat pindah WiFi, issue ada pada cache browser (`Ctrl+F5`) atau filter DNS WiFi ISP (aktifkan DoH 1.1.1.1).
 7. **Script Start/Stop (Proteksi Zero-Downtime Terminal)**:
    - `start.ps1`: dilengkapi pengecekan kesehatan port 8900. Jika server sudah hidup normal, proses restart otomatis dilewati agar sesi CMD/PowerShell aktif tidak mati.
-   - `stop.ps1`: menghentikan node, cloudflared, dan membersihkan port 8900/4317.
+   - `stop.ps1`: menghentikan node, cloudflared, dan membersihkan port 8900/4317/2222.
+8. **Native Direct SSH Server (Port 2222 untuk Termux & Remote PC)**:
+   - File: `C:\Users\yonat\dashboard\ssh-server.js` (`ssh2` + `@lydell/node-pty`).
+   - Akses langsung tanpa browser / tanpa Cloudflare WebSocket:
+     - ZeroTier (Remote HP/PC Luar): `ssh node01@192.168.195.80 -p 2222` (atau alias `ssh node01`)
+     - LAN WiFi Rumah/Sekolah: `ssh node01@192.168.2.101 -p 2222`
+     - Autentikasi: Passwordless (tanpa password langsung masuk).
+     - Identitas Visual: Banner `[NODE 01] LAPTOP SERVER YN` + prompt hijau `[01-SERVER-YN] C:\Users\yonat>` agar tidak tertukar dengan PC kerja 02.
+   - Diawasi otomatis oleh `watchdog.ps1` dan `start.ps1`.
+9. **Proteksi Sleep & WiFi Windows**:
+   - Power policy AC: Standby 0 (Never), Display 0 (Never), Lid Close 0 (Do Nothing) agar tunnel & WiFi tidak sleep saat ditinggal lama.
 8. **ConPTY Windows & Task Scheduler Working Directory**:
    - `node-pty` di Windows memanggil `conptyNative.startProcess(file, ...)` (`CreateProcess(lpApplicationName, ...)`). Jika `file` hanya `'cmd.exe'` dan CWD dari Task Scheduler adalah `C:\Windows\System32`, Windows melempar `Error: File not found:`.
    - Solusi: `server.js` selalu resolve executable path absolut via `resolveShellPath()` (`ComSpec` / full path powershell). `start.ps1`, `watchdog.ps1`, dan Action Task Scheduler selalu pakai `-WorkingDirectory C:\Users\yonat\dashboard`.

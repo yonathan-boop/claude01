@@ -5,3 +5,4 @@
 - [Server YN Hub](server-yn-hub.md) — arsitektur dashboard port 8900, persistent multi-CMD /ssh, Cloudflare Tunnel serveryn.my.id, proxy 3D Office
 - [Aturan Editing Soal SD](aturan-editing-soal-sd.md) — spesifikasi layout F4, kop surat 1 kolom, struktur 2 kolom, dan pipeline self-review naskah ujian SD
 - [Google Drive](google-drive.md) — script gdrive.js, kredensial service account, dan CLI interaksi dokumen Methodist-11
+- [Rule Enforcement Engine (Pagar Fisik)](rule-enforcement-engine.md) — arsitektur hook PreToolUse, rule-guard.js, dan permanent-rules.json di Node 01

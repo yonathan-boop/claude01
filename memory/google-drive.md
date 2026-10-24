@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 0611ce83-9a44-45c3-97b9-476137003ba6
-  modified: 2026-10-24T02:14:41.595Z
+  modified: 2026-10-24T01:35:57.975Z
 ---
 
 Akses Google Drive via Node.js script tanpa dependensi eksternal.
