@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "engine": "Rule-Enforcement-Engine-01",
+  "node": "01-SERVER-YN",
+  "rules": [
+    {
+      "id": "RULE-PUSH-CLAUDE01-ONLY",
+      "name": "Push Hanya ke Claude01 / Domain 01",
+      "status": "active",
+      "description": "Node 01 hanya boleh git push ke repo sendiri (claude01/m11-website). DILARANG KERAS push ke claude02, Opencode, atau 11111.",
+      "targets": [],
+      "forbidden_tools": [],
+      "terminal_write_patterns": [
+        "git\\s+.*push.*(claude02|Opencode|11111)",
+        "git\\s+-C\\s+.*(claude02|Opencode|11111).*push"
+      ],
+      "created_at": "2026-10-24T14:30:00Z"
+    },
+    {
+      "id": "RULE-PROTECT-OPENCODE",
+      "name": "Proteksi Arsip Pasif Opencode & Memory",
+      "status": "active",
+      "description": "Dilarang keras menulis, mengedit, atau git push pada folder Opencode/memory atau OneDrive\\Desktop\\memory.",
+      "targets": [
+        "C:\\Users\\yonat\\OPENCODE",
+        "C:\\Users\\yonat\\OneDrive\\Desktop\\Opencode",
+        "C:\\Users\\yonat\\OneDrive\\Desktop\\memory"
+      ],
+      "forbidden_tools": [
+        "Write",
+        "Edit",
+        "MultiEdit"
+      ],
+      "terminal_write_patterns": [
+        ".*(OPENCODE|Opencode|OneDrive[/\\\\]Desktop[/\\\\]memory).*(git\\s+(commit|push|add|rm|reset)|New-Item|Set-Content|Add-Content|Remove-Item|del|rm|>|>>).*",
+        "(git\\s+(commit|push|add|rm|reset)|New-Item|Set-Content|Add-Content|Remove-Item|del|rm|>|>>).*(OPENCODE|Opencode|OneDrive[/\\\\]Desktop[/\\\\]memory).*"
+      ],
+      "created_at": "2026-10-24T14:30:00Z"
+    },
+    {
+      "id": "RULE-PROTECT-OFFICE",
+      "name": "Proteksi Aplikasi Office User",
+      "status": "active",
+      "description": "Dilarang mematikan atau membunuh proses WINWORD.EXE, EXCEL.EXE, atau POWERPNT.EXE milik user.",
+      "targets": [],
+      "forbidden_tools": [],
+      "terminal_write_patterns": [
+        "\\b(taskkill|Stop-Process|kill)\\b.*(winword|excel|powerpnt)",
+        "\\b(winword|excel|powerpnt)(\\.exe)?\\b.*\\b(taskkill|Stop-Process|kill)\\b"
+      ],
+      "created_at": "2026-10-24T14:30:00Z"
+    },
+    {
+      "id": "RULE-PAGAR-TEST",
+      "name": "Proteksi File Uji Pagar Fisik",
+      "status": "active",
+      "description": "File pagar-test.txt tidak boleh diubah, ditimpa, atau dihapus untuk verifikasi fisik.",
+      "targets": [
+        "C:\\Users\\yonat\\pagar-test.txt",
+        "pagar-test.txt"
+      ],
+      "forbidden_tools": [
+        "Write",
+        "Edit",
+        "MultiEdit"
+      ],
+      "terminal_write_patterns": [
+        "(>|>>|Set-Content|Add-Content|Out-File|Remove-Item|del|rm|truncate|echo.*>).*pagar-test\\.txt",
+        "pagar-test\\.txt.*(>|>>|Set-Content|Add-Content|Out-File|Remove-Item|del|rm)"
+      ],
+      "created_at": "2026-10-24T14:30:00Z"
+    }
+  ],
+  "history": [
+    {
+      "action": "INIT",
+      "rule_id": "ALL",
+      "timestamp": "2026-10-24T14:30:00Z",
+      "note": "Inisialisasi sistem kepatuhan Rule Enforcement Engine di Node 01"
+    }
+  ]
+}

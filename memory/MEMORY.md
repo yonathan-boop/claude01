@@ -1,1 +1,7 @@
-- [User Preferences](user-preferences.md) — environment, CLI preference, and friction-free workflow
+- [User Preferences](user-preferences.md) — environment, CLI preference, prinsip Harta Karun & Racun, topologi node 01/02
+- [Active Tasks & Pending Work](active-tasks.md) — backlog pekerjaan tertunda, pending verification, dan pengingat kontinuitas antar sesi
+- [User Language Preference](user-language-indonesian.md) — Prefers Indonesian (Bahasa Indonesia)
+- [Agent Model Policy](agent-model-policy.md) — Wajib model campur & effort high via 9router lokal
+- [Server YN Hub](server-yn-hub.md) — arsitektur dashboard port 8900, persistent multi-CMD /ssh, Cloudflare Tunnel serveryn.my.id, proxy 3D Office
+- [Aturan Editing Soal SD](aturan-editing-soal-sd.md) — spesifikasi layout F4, kop surat 1 kolom, struktur 2 kolom, dan pipeline self-review naskah ujian SD
+- [Google Drive](google-drive.md) — script gdrive.js, kredensial service account, dan CLI interaksi dokumen Methodist-11

@@ -21,6 +21,31 @@
     "type": "command",
     "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"~\\.claude\\hooks\\caveman-statusline.ps1\""
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|PowerShell|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"C:\\Users\\yonat\\.claude\\hooks\\rule-guard.js\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\yonat\\.claude\\hooks\\session-start-observer.ps1\"",
+            "shell": "powershell"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "replica-skill@replica-skill": true,

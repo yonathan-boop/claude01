@@ -14,7 +14,13 @@ if (Test-Path $MemorySrc) {
     Write-Host "[OK] Memory synced." -ForegroundColor Green
 }
 
-# 2. Git status check & push
+# 2. Sync CLAUDE.md
+$HomeClaude = "$HOME\.claude"
+if (Test-Path "$HomeClaude\CLAUDE.md") {
+    Copy-Item -Path "$HomeClaude\CLAUDE.md" -Destination "$ClaudeDir\CLAUDE.md" -Force
+}
+
+# 3. Git status check & push ke claude01
 git add -A
 $Changes = git status --porcelain
 if ($Changes) {

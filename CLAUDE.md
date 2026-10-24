@@ -53,9 +53,10 @@ Behavioral guidelines to reduce common LLM coding mistakes:
 ---
 
 ## 4. Task Observer & Skill Evolution
-- Monitor task execution for skill improvement opportunities during any multi-step task or agentic workflow.
-- Capture patterns, user corrections, workflow insights, and methodology worth preserving.
-- Use `task-observer` for pattern discovery and `skill-creator` to formalize, test, and package new skills.
+- Jalankan task-observer otomatis di background sejak awal sesi task-oriented (jangan tunggu dipanggil manual).
+- User awam soal internal CLI/AI tooling: ambil inisiatif penuh pasang konfigurasi terbaik & beri saran proaktif tanpa berasumsi user tahu nama skill.
+- Monitor task execution, rekam pattern, koreksi user, dan insight workflow ke `skill-observations/log.md`.
+- Formalisasi ke skill via `skill-creator` jika pattern berulang (>=2 kali).
 
 ---
 
