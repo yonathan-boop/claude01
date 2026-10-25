@@ -5,29 +5,36 @@ metadata:
   node_type: memory
   type: project
   originSessionId: a6562376-15b8-410d-9b8f-e803f7a93d16
-  modified: 2026-10-24T06:17:19.782Z
+  modified: 2026-10-25T10:42:40.737Z
 ---
 
-Server YN berjalan di port 8900 dan di-expose publik via Cloudflare Tunnel (`https://serveryn.my.id`).
+Server YN berjalan dengan arsitektur **Local Microservices via PM2** dengan Reverse Proxy Gateway di port 8900 dan di-expose publik via Cloudflare Tunnel (`https://serveryn.my.id`).
 
-## Komponen & Routing:
-1. **Dashboard Utama** (`/`):
-   - Lokasi: `C:\Users\yonat\dashboard`
-   - File: `server.js`, `public/index.html`
-   - Menampilkan status RAM, CPU, Uptime, serta gateway ke layanan aktif.
-2. **Persistent Multi-CMD Terminal Hub** (`/ssh` -> `/ssh/`):
-   - File: `public/ssh.html` + engine ConPTY di `server.js` (`@lydell/node-pty` + `ws`).
-   - Fitur:
-     - Bisa spawn banyak CMD/PowerShell (`/api/pty/spawn`).
-     - Background persistence: sesi PTY tidak akan mati jika tab/browser ditutup atau koneksi putus; hanya mati jika di-kill manual (`/api/pty/kill`).
-     - WebSocket `/api/pty/ws` dengan keepalive heartbeat 5s agar Cloudflare Tunnel tidak timeout.
-     - Responsive 2-tier bar khusus mobile HP + auto-reconnect saat tab kembali aktif (`visibilitychange`).
-     - Mobile HP Touch Scroll System:
-       - Touch swipe 1 jari dengan akselerasi & momentum inersia untuk membaca riwayat/jawaban panjang ke atas.
-       - Floating Nav Pad di kanan bawah: `⤒` (Top), `▲` (PgUp), `▼` (PgDn), `⤓` (Bottom).
-       - Floating pill `↓ Terkini (Bottom)` otomatis muncul saat membaca riwayat lampau + indikator hijau `● Output Baru Masuk ↓` saat ada streaming respons masuk.
-       - Draggable vertical touch scrubber di sisi kanan untuk scrubbing cepat ke ribuan baris lampau.
-       - Buffer scrollback xterm ditingkatkan ke 10.000 baris.
+## Arsitektur PM2 Microservices (`ecosystem.config.js`):
+1. **Gateway "Batu Karang" (Port 8900)** (`services/gateway.js`):
+   - Reverse proxy HTTP & WebSocket berkecepatan tinggi.
+   - Dual routing: Subdomain (`ssh.*`, `m11.*`, `brain.*`, `voice.*`, `3d.*`) dan Path fallback (`/ssh/`, `/website/`, `/brain/`, `/voice/`, `/3d/`).
+2. **Terminal Hub (Port 8901)** (`services/terminal-hub.js`):
+   - Engine persistent ConPTY (`@lydell/node-pty` + `ws`).
+   - Sesi CMD/PowerShell terisolasi penuh; restart web/dashboard tidak pernah memutus terminal.
+3. **Methodist-11 Website (Port 8902)** (`services/m11-website.js`):
+   - Melayani web sekolah dari `Desktop/Claude/projects/m11-website`.
+4. **Second Brain (Port 8903)** (`services/second-brain.js`):
+   - Melayani UI & API Obsidian markdown vault di `Documents/SecondBrain`.
+5. **Voice Chat Agent (Port 8904)** (`services/voice-chat.js`):
+   - Voice assistant UI & konektor audio ke 9Router lokal port 20128.
+6. **Dashboard UI & Core APIs (Port 8905)** (`services/dashboard.js`):
+   - Dashboard monitor RAM/CPU, `/api/status`, Universal Node Hub (RPC Node 01 <-> Node 02), upload gambar.
+7. **Native SSH Server (Port 2222)** (`ssh-server.js`):
+   - Akses langsung Termux / PC remote via SSH protocol (`ssh2`).
+8. **Cloudflare Tunnel Supervisor** (`services/tunnel.js`):
+   - Mengawasi proses `cloudflared.exe` agar tunnel `serveryn.my.id` selalu aktif.
+
+## Manajemen Proses & Self-Healing:
+- `pm2 restart <nama-service>` untuk restart service spesifik (contoh: `pm2 restart m11-website`).
+- `start.ps1`: cek port 8900; jika down jalankan `pm2 start ecosystem.config.js`.
+- `stop.ps1`: `pm2 stop all`, `pm2 delete all`, dan kill port lingering.
+- `watchdog.ps1`: tiap 5 menit ping `/api/status`; jika down otomatis panggil `start.ps1`. Startup via `server-yn.vbs` di folder Startup Windows.
      - Image paste/upload langsung dari clipboard HP/PC ke file path.
 3. **Cloudflare Tunnel Auto-Supervisor**:
    - `server.js` otomatis menjalankan dan mengawasi proses `cloudflared.exe`. Jika tunnel drop atau dihentikan, auto-restart dalam 3 detik.
@@ -44,6 +51,7 @@ Server YN berjalan di port 8900 dan di-expose publik via Cloudflare Tunnel (`htt
    - Arsitektur terpisah: berjalan di luar proses `server.js` sehingga pembaruan atau akses 9Router tidak pernah mengganggu/mematikan sesi SSH terminal aktif.
 6. **3D AI Office** (`/3d`):
    - Proxy ke Cubefarm lokal di port 4317.
+   - Status: **Dimatikan (Disabled)** atas permintaan user. File dan paket instalasi tetap utuh (`cubefarmEnabled = false` di `server.js`).
    - Fitur Chat CEO (Morgan): Tombol mic diganti tombol kamera (`📷`) untuk upload / attach gambar langsung (`PNG`, `JPG`, `WebP`, `GIF`, `SVG`) dan paste screenshot (`Ctrl+V`). File disimpan ke `~/.cubefarm/uploads/` via endpoint `POST /api/upload`.
    - Troubleshooting client: jika blank putih di PC luar saat pindah WiFi, issue ada pada cache browser (`Ctrl+F5`) atau filter DNS WiFi ISP (aktifkan DoH 1.1.1.1).
 7. **Script Start/Stop (Proteksi Zero-Downtime Terminal)**:
@@ -59,7 +67,13 @@ Server YN berjalan di port 8900 dan di-expose publik via Cloudflare Tunnel (`htt
    - Diawasi otomatis oleh `watchdog.ps1` dan `start.ps1`.
 9. **Proteksi Sleep & WiFi Windows**:
    - Power policy AC: Standby 0 (Never), Display 0 (Never), Lid Close 0 (Do Nothing) agar tunnel & WiFi tidak sleep saat ditinggal lama.
-8. **ConPTY Windows & Task Scheduler Working Directory**:
+10. **File Installer & Launcher Otomatis 2-Arah (Node 01 <-> Node 02 / Advan)**:
+   - Disediakan langsung di `dashboard/public/` dan halaman `https://serveryn.my.id/`:
+     - `setup.ps1`: One-liner PowerShell (`irm https://serveryn.my.id/setup.ps1 | iex`). Otomatis minta hak Administrator, pasang OpenSSH Server di Node 02 (port 22), set authorized_keys kunci ed25519 Node 01, buka firewall, dan **LANGSUNG MASUK** ke SSH remote Node 01 (`ssh node01`) dalam 1 proses tanpa file terpisah.
+     - `SETUP_AKSES_2_ARAH_ADVAN.bat`: Launcher batch 1-klik untuk Windows Explorer, memanggil `setup.ps1` dengan elevasi UAC otomatis.
+     - Kunci Publik Node 01: `ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIBqpwGqx4oyx+H0DKSQpkl74rvMJ/J/+5a+jY917D0T yonat@SERVER-YN`.
+     - Akses Balik Node 01 -> Node 02: Node 01 bisa remote & edit file di laptop Advan via `ssh -i ~/.ssh/id_ed25519 advan@192.168.2.105` (atau alias `node02`). Teruji membaca dan mengeksekusi perintah di `C:\Users\advan\Desktop\New folder`.
+11. **ConPTY Windows & Task Scheduler Working Directory**:
    - `node-pty` di Windows memanggil `conptyNative.startProcess(file, ...)` (`CreateProcess(lpApplicationName, ...)`). Jika `file` hanya `'cmd.exe'` dan CWD dari Task Scheduler adalah `C:\Windows\System32`, Windows melempar `Error: File not found:`.
    - Solusi: `server.js` selalu resolve executable path absolut via `resolveShellPath()` (`ComSpec` / full path powershell). `start.ps1`, `watchdog.ps1`, dan Action Task Scheduler selalu pakai `-WorkingDirectory C:\Users\yonat\dashboard`.
 

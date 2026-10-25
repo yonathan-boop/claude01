@@ -6,3 +6,8 @@
 - [Aturan Editing Soal SD](aturan-editing-soal-sd.md) — spesifikasi layout F4, kop surat 1 kolom, struktur 2 kolom, dan pipeline self-review naskah ujian SD
 - [Google Drive](google-drive.md) — script gdrive.js, kredensial service account, dan CLI interaksi dokumen Methodist-11
 - [Rule Enforcement Engine (Pagar Fisik)](rule-enforcement-engine.md) — arsitektur hook PreToolUse, rule-guard.js, dan permanent-rules.json di Node 01
+- [Disiplin Bedah Kode (Surgical Edits)](feedback-strict-surgical-edits.md) — teguran user: dilarang tambah elemen liar atau ubah di luar perintah spesifik
+- [Playbook Video Editing & Animasi](video-editing-playbook.md) — North Star: kurasi viral luar -> versi Indo -> edit -> upload; alur CapCut JSON hack, 2D Stick, & 3D Pixar
+- [Aturan Editing Video](aturan-editing-video.md) — North Star konten kreator, standar 1 folder tunggal, penamaan deskriptif, dan rubrik skor kelayakan tayang (<5 tolak, 6 pas-pasan, 8-9 premium)
+- [OpenJarvis 9router Bridge](openjarvis-9router-bridge.md) — bypass Ollama lokal OpenJarvis desktop via bridge shim 11434 & server 8000 ke 9router model campur
+- [JARVIS 2.0 HUD](jarvis-2-hud.md) — 3D Three.js particle orb Iron Man HUD, Double-Tap Z trigger, Edge-TTS British voice & 9router backend

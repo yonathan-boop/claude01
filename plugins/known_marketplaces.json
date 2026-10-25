@@ -5,7 +5,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "C:\\Users\\yonat\\.claude\\plugins\\marketplaces\\claude-plugins-official",
-    "lastUpdated": "2026-10-24T06:21:25.805Z"
+    "lastUpdated": "2026-10-25T16:20:32.357Z"
   },
   "replica-skill": {
     "source": {
@@ -30,5 +30,21 @@
     },
     "installLocation": "C:\\Users\\yonat\\.claude\\plugins\\marketplaces\\caveman",
     "lastUpdated": "2026-10-23T09:10:10.453Z"
+  },
+  "brand-building-skills": {
+    "source": {
+      "source": "github",
+      "repo": "arnabbagxd/Brand-building-skills"
+    },
+    "installLocation": "C:\\Users\\yonat\\.claude\\plugins\\marketplaces\\brand-building-skills",
+    "lastUpdated": "2026-10-24T08:40:16.127Z"
+  },
+  "thedotmack": {
+    "source": {
+      "source": "github",
+      "repo": "thedotmack/claude-mem"
+    },
+    "installLocation": "C:\\Users\\yonat\\.claude\\plugins\\marketplaces\\thedotmack",
+    "lastUpdated": "2026-10-24T10:35:30.212Z"
   }
 }

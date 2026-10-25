@@ -5,13 +5,15 @@ metadata:
   node_type: memory
   type: user
   originSessionId: d395a062-c292-4abe-8a50-1ce710e2b1f6
-  modified: 2026-10-24T04:30:43.707Z
+  modified: 2026-10-25T16:08:46.551Z
 ---
 
 - Environment: Windows 11 Home, PowerShell 5.1, Windows Terminal Quake mode (`Win + ` `).
 - Strict platform rule: Windows 11 / PowerShell native only (NOT Linux/WSL/Ubuntu). Never suggest Linux commands (`apt`, `sudo`, `tmux`, etc.).
 - Tooling: Does not use VS Code; operates primarily via Windows Terminal and CLI.
+- Chrome Profile: Profile 1 (Yonathan / `nahtan.kwee@gmail.com`) adalah profil akun Facebook utama. Default (`yonathan.kwee@gmail.com`) dan Profile 4 (`zeroname1100@gmail.com`).
 - Session persistence: Use native Claude CLI commands (`claude --bg`, `claude attach`, `claude -c`, `claude -r`).
+- Visual preference: Wajib tema gelap pekat & redup (OLED Deep Dark: background `#08090C`, teks abu lembut `#A6ACCD`, warna muted/low-glare). Dilarang skema terang, pastel silau, atau neon menyala.
 - UX preference: Hates confirmation popups, workspace trust prompts, and permission friction; prefers direct, automated execution.
 - Context limit: 500K max context (`CLAUDE_CODE_MAX_CONTEXT_TOKENS=500000`) dengan compact langsung saat sentuh 500K (`CLAUDE_CODE_AUTO_COMPACT_WINDOW=500000`).
 - User persona & guidance: Awam/non-teknis soal internal CLI & meta-tools. Wajib proaktif: otomatis setel yang terbaik di background, jangan tunggu diminta atau berasumsi user tahu nama skill/perintah.
@@ -29,6 +31,7 @@ metadata:
 6. **Flexible Locator, Strict Identity:** Cari file proaktif di lokasi alternatif jika tidak ada di path dugaan.
 7. **Personalisasi & Adaptasi Mandiri:** Jadikan skill/referensi luar sebagai milik 01 sendiri (personalisasi nama, struktur, arsitektur bersih di domain 01), bukan copy-paste mentah ke folder referensi.
 8. **Auto-Record Saat Kata 'Berhasil':** Setiap kali user menyatakan 'berhasil', wajib detik itu juga memvalidasi dan mencatat arsitektur/solusi/status yang sukses ke persistent memory (`memory/`) tanpa disuruh ulang.
+9. **Transparansi Pekerjaan (Wajib Terlihat & Terlacak):** Setiap proses eksekusi, status kerja, atau delegasi tugas (misal lempar ke Claude Code di terminal / PTY / PowerShell) WAJIB terlihat gamblang secara visual di HUD / status. User tidak boleh dibiarkan menebak apakah AI sedang bekerja, stuck, sudah sampai mana, atau didelegasikan ke mana.
 
 ## RACUN (Pantangan Mutlak / Red Lines):
 1. **Panggilan:** DILARANG menyebut nama user ("Pak Yonathan" dsb). Langsung ke topik atau panggil 'Anda'.
