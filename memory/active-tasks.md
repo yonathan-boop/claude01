@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 3a0d34ce-b1fc-481d-a5ab-5c73327fc550
-  modified: 2026-10-26T09:47:06.718Z
+  modified: 2026-10-26T11:51:19.997Z
 ---
 
 # Status Pekerjaan 01 (Laptop / Infra & Tooling):
@@ -217,6 +217,23 @@ metadata:
   - CapCut Desktop (`ByteDance.CapCut` v9.4.0) — siap dipakai otomatisasi script timeline `draft_content.json`.
   - Audacity, HandBrake, OBS Studio.
 - **Aturan Permanen:** Dilarang download masif lagi ke depannya. Aset lokal yang ada sudah cukup untuk produksi video.
+
+### 11. Gboard Mic Windows Voice Typing (Real-Time VAD, Equalizer & Focus-Safe) - SELESAI
+- **Hasil:**
+  - **Auto-Prioritas USB Mic:** Otomatis mengunci `Microphone (USB2.0 Device)` dan mengabaikan mic hantu `AudioRelay`. Re-scan otomatis saat Spasi 2x bila port USB dipindah.
+  - **Visualizer Waveform (Live Equalizer):** 5 bar canvas Tkinter bergerak real-time mengikuti amplitudo/desibel suara (hijau -> toska -> merah muda), memberi indikasi visual suara masuk.
+  - **Streaming VAD Transcription:** Suara langsung diproses dan diketik otomatis tiap jeda bicara (~0.42 detik) tanpa perlu klik selesai.
+  - **Window Focus & Anti-Poisoning Fix:**
+    - Menyelesaikan bug "Terketik tapi teks tidak muncul / harus restart aplikasi".
+    - `WS_EX_NOACTIVATE (0x08000000)` dipasang ke HWND top-level agar sentuhan pada widget tidak mencuri fokus teks.
+    - Filter Process ID (`wnd_pid != my_pid`) mencegah widget mengirim `Ctrl+V` ke dirinya sendiri.
+    - HWND aktif dikunci instan tepat saat double-tap Spasi ditekan.
+  - **Lokasi & Shortcut:**
+    - Script utama: `C:\Users\yonat\gboard_mic.py`
+    - Launcher: `C:\Users\yonat\Desktop\AKTIFKAN_GOOGLE_VOICE.bat` & `Gboard_Mic.vbs`
+    - Shortcut Desktop: `Google Voice (Spasi 2x).lnk`
+    - Backup Repo: `Desktop\Claude\tools\gboard-mic\` (Commit `8150ebd` di GitHub `claude01`).
+
 
 
 
