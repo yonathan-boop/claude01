@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: a6562376-15b8-410d-9b8f-e803f7a93d16
-  modified: 2026-10-25T10:42:40.737Z
+  modified: 2026-10-26T01:03:22.890Z
 ---
 
 Server YN berjalan dengan arsitektur **Local Microservices via PM2** dengan Reverse Proxy Gateway di port 8900 dan di-expose publik via Cloudflare Tunnel (`https://serveryn.my.id`).
@@ -21,8 +21,8 @@ Server YN berjalan dengan arsitektur **Local Microservices via PM2** dengan Reve
    - Melayani web sekolah dari `Desktop/Claude/projects/m11-website`.
 4. **Second Brain (Port 8903)** (`services/second-brain.js`):
    - Melayani UI & API Obsidian markdown vault di `Documents/SecondBrain`.
-5. **Voice Chat Agent (Port 8904)** (`services/voice-chat.js`):
-   - Voice assistant UI & konektor audio ke 9Router lokal port 20128.
+5. **JARVIS 2.0 Tactical HUD (Port 3000)** (`C:\Users\yonat\jarvis-hud\server.js`):
+   - Antarmuka Holographic Three.js, Voice Engine Edge-TTS (port 3002), Claude Fleet Manager, integrasi 9Router port 20128. Menggantikan Voice Agent lama port 8904. Rute reverse proxy gateway: `/jarvis/`, `/voice/`, `/voice.html` (redirect), dan subdomains `jarvis.*`, `voice.*`.
 6. **Dashboard UI & Core APIs (Port 8905)** (`services/dashboard.js`):
    - Dashboard monitor RAM/CPU, `/api/status`, Universal Node Hub (RPC Node 01 <-> Node 02), upload gambar.
 7. **Native SSH Server (Port 2222)** (`ssh-server.js`):

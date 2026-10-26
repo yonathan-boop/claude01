@@ -11,3 +11,5 @@
 - [Aturan Editing Video](aturan-editing-video.md) — North Star konten kreator, standar 1 folder tunggal, penamaan deskriptif, dan rubrik skor kelayakan tayang (<5 tolak, 6 pas-pasan, 8-9 premium)
 - [OpenJarvis 9router Bridge](openjarvis-9router-bridge.md) — bypass Ollama lokal OpenJarvis desktop via bridge shim 11434 & server 8000 ke 9router model campur
 - [JARVIS 2.0 HUD](jarvis-2-hud.md) — 3D Three.js particle orb Iron Man HUD, Double-Tap Z trigger, Edge-TTS British voice & 9router backend
+- [Checkpoint JARVIS 2.0](checkpoint-jarvis-v2.md) — titik poin stabil commit 764a6fe tag checkpoint-stable-v2 dan cara rollback instan
+- [Gboard Mic Voice Typing](gboard-mic-voice-typing.md) — floating voice typing widget Spasi 2x, auto-prioritas USB mic, waveform live visualizer, dan real-time VAD streaming

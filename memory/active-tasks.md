@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 3a0d34ce-b1fc-481d-a5ab-5c73327fc550
-  modified: 2026-10-25T16:08:57.838Z
+  modified: 2026-10-26T09:47:06.718Z
 ---
 
 # Status Pekerjaan 01 (Laptop / Infra & Tooling):
@@ -47,7 +47,23 @@ metadata:
   - Watchdog guard anti-false-kill (timeout 10s + retry 3x) menjaga uptime server & SSH port 2222.
   - Power policy AC diatur Never Sleep & Lid Close Do Nothing agar koneksi tidak putus saat ditinggal.
 
-### 3. Cubefarm 3D Office Lokal - DIMATIKAN (OFF)
+### 3. Integrasi JARVIS 2.0 HUD ke Server YN Gateway (Port 3000) & Fleet Terminal - SELESAI
+- **Hasil:**
+  - Gemini Voice lama (Port 8904) resmi digantikan oleh JARVIS 2.0 Tactical HUD (`localhost:3000`).
+  - Layanan `jarvis` didaftarkan ke PM2 (`ecosystem.config.js`) auto-restart & self-healing.
+  - Gateway Rock (`services/gateway.js`) melakukan reverse proxy dual-routing.
+  - **Perbaikan Terminal Worker & Profile JARVIS (Port 3000 Live):**
+    - **Akar Masalah:**
+      1. Regex routing di `tryFastLocalAction` terlalu sempit (hanya menangkap `suruh claude`, luput pada frasa "panggil claude", "buka claude", "kamu jangan kerjakan sendiri...").
+      2. 9router berhalusinasi menghasilkan `[EXEC] Start-Process powershell...` yang berjalan tersembunyi tanpa jendela GUI di background PM2, sementara suara JARVIS mengklaim "Perintah sudah berhasil dieksekusi".
+      3. Skrip `terminal-worker.js` belum diterapkan ke folder `jarvis-hud` produksi (port 3000) dan sebelumnya terkunci opsi non-interaktif `claude -p`.
+    - **Solusi Tuntas:**
+      1. `terminal-worker.js` dipasang di `jarvis-hud`: Menjalankan Claude interaktif dengan `--name "JARVIS Worker #<slot>"` + auto-notify ke port 3000 saat selesai + shell CMD interaktif standby.
+      2. `server.js` diperbarui: Dispatcher menangkap seluruh variasi (`panggil claude`, `buka claude`, `terminal`, `profil jarvis`) dan safety guard di `runPowerShell` otomatis mengalihkan perintah claude liar ke terminal visible.
+      3. Profile `JARVIS Worker` didaftarkan ke Windows Terminal (`settings.json`) dan agent khusus `~/.claude/agents/jarvis.md` aktif.
+      4. PM2 proses 8 di-restart dan terverifikasi bersih oleh Curator.
+
+### 4. Cubefarm 3D Office Lokal - DIMATIKAN (OFF)
 
 ### 4. Terminal Visual & Color Scheme Upgrade (OLED Deep Dark) - SELESAI
 - **Hasil:**
@@ -65,6 +81,19 @@ metadata:
   - Proses cubefarm dihentikan, port 4317 tertutup.
   - Proxy di `server.js` di-set `cubefarmEnabled = false` (HTTP 503 saat diakses).
   - File instalasi cubefarm tetap utuh dan tersimpan di sistem.
+
+### 5. Hermes CLI & Desktop 9Router Integration - SELESAI
+- **Hasil:**
+  - **Hermes CLI:** Terpasang dan aktif di PATH (`C:\Users\yonat\AppData\Local\hermes\bin\hermes.exe`).
+  - **Hermes Desktop:** Terpasang dan aktif di `C:\Users\yonat\AppData\Local\hermes\hermes-agent\apps\desktop\release\win-unpacked\Hermes.exe`. Shortcut `Desktop\Hermes.lnk` dan Start Menu dibuat.
+  - **9Router Integration:**
+    - Base URL: `http://127.0.0.1:20128/v1`
+    - Provider: `custom:local-(127.0.0.1:20128)`
+    - Model Default: `campur`
+    - Reasoning Effort: `high` (`agent.reasoning_effort: high`)
+    - Custom Providers: Terdaftar seluruh model 9router (`campur`, `gemini-flash`, `claude-sonnet`, `ag/gemini-3.8-flash-high`, dll.)
+    - Sinkronisasi Pengetahuan: `SOUL.md`, `memories/MEMORY.md`, dan `memories/USER.md` dipulihkan identik dengan repo `11111` (commit `8bc87bf`).
+    - Verifikasi Fisik: `hermes -z "Katakan halo dalam 1 kata"` sukses dijawab `"Halo"` via 9Router.
 
 ### 4. Produksi & Upload Batch 4 Video Viral Baru - SELESAI & SUDAH TERBIT DI FB REELS
 - **Hasil:** 4 video otomatis selesai 100%, terunggah publik ke Facebook Reels, tersimpan di `C:\Users\yonat\Desktop\Hasil_Edit_Video\` dan live di `https://serveryn.my.id/gallery.html`:
@@ -161,18 +190,22 @@ metadata:
 - **Hasil:** Terpasang di `C:\Users\yonat\AppData\Local\Programs\OpenWhispr\OpenWhispr.exe`.
 - **Status:** Shortcut Desktop & Start Menu aktif, aplikasi sudah running di background.
 
-### 8. Otomasi Produksi Video Shorts Terkurasi (Skor 9) - SELESAI
+### 8. Otomasi Produksi & Upload Video Shorts Terkurasi (Skor 8-9) - SELESAI
 - **Folder Tunggal Lokal:** `C:\Users\yonat\Desktop\Hasil_Edit_Video\` (Wajib nama deskriptif & 100% sinkron).
 - **Mirror Web Publik:** `C:\Users\yonat\dashboard\public\shorts\` & Galeri `https://serveryn.my.id/gallery.html`.
-- **Batch 5 Video Terbaik (Mengadopsi Formula Viral Referensi):**
-  1. `Sains - Misteri Sabuk Asteroid & Gravitasi Monster Jupiter.mp4` (Format Editorial Explainer Mudeng.id / 60 FPS / NASA assets) — **LIVE DI FACEBOOK REELS**.
-  2. `Sains - Hujan Berlian di Planet Neptunus 60fps.mp4` (Format 3D Space Motion + Partikel Kristal Berlian + Foley Chimes).
-  3. `Sains - Kenapa Kucing Oren Kebanyakan Jantan.mp4` (Format Mudeng.id Sains Genetika 2025 + Kromosom X + Kucing Belang Tiga).
-  4. `Bisnis - Ide Bisnis Modal Nol Dari Keluhan Orang.mp4` (Format Money Anchor 2D Line Character + Mindset Validasi Masalah Pasar).
-  5. `31_Animasi_Stick - Kenapa Kamu Suka Nunda Tugas dan Terjebak Dopamin.mp4` (Format OverSimplified Stick Meme + Jam 19:00 + Alarm 23:00 + Otak Dopamin).
-  6. `Motivasi - Kekuatan Waktu Tak Ada yang Lebih Kuat dari Waktu Dubbing Indo.mp4` (Full Dubbing Indo ArdiNeural, Ambient BGM, Sub Indo Kinetik, 1440p) — **LIVE DI FACEBOOK REELS**.
-  7. `Motivasi - Kekuatan Waktu Tak Ada yang Lebih Kuat dari Waktu Sub Indo.mp4` (Versi audio original + Sub Indo Poppins-Bold).
-- **Status Upload Otomatis Facebook:** Worker latar belakang (`upload_batch_4_remaining.ps1`) aktif mengunggah video 2 s/d 5 dengan jeda alami 90 detik per video (Status Publik).
+- **Status Publikasi 10 Video Terkurasi (100% LIVE):**
+  - **Facebook Reels:** 10 video lolos kurasi sudah dipublikasikan.
+  - **YouTube Shorts:** 10 video terkurasi sudah berhasil diunggah dan terbit Publik di channel YouTube:
+    1. `Sains - Hujan Berlian di Planet Neptunus 60fps.mp4`
+    2. `31_Animasi_Stick - Kenapa Kamu Suka Nunda Tugas dan Terjebak Dopamin.mp4`
+    3. `Sains - Kenapa Kucing Oren Kebanyakan Jantan.mp4`
+    4. `Sains - Misteri Sabuk Asteroid & Gravitasi Monster Jupiter.mp4`
+    5. `Bisnis - Ide Bisnis Modal Nol Dari Keluhan Orang.mp4`
+    6. `Psikologi - Kenapa Orang Jahat Cepat Sukses Dibanding Orang Baik.mp4`
+    7. `Animasi_2D - Dunning Kruger Effect Kenapa Orang Kurang Paham Paling Berisik.mp4`
+    8. `Psikologi - Ben Franklin Effect Cara Cerdik Bikin Musuh Jadi Teman.mp4`
+    9. `Sains - Misteri Palung Mariana Kenapa Ikan Dasar Laut Tidak Hancur.mp4`
+    10. `Animasi_3D - Misteri Lift Jam Tiga Malam dan Tombol Lantai Ghaib.mp4`
 
 ### 9. Aset Digital Editing Video & Tooling Otomasi - SELESAI & STOP TOTAL
 - **Status Download:** Dihentikan total permanen sesuai instruksi user (tidak ada download lagi).
