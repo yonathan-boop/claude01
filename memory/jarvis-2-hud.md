@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 2026-10-25-jarvis
-  modified: 2026-10-26T10:03:24.697Z
+  modified: 2026-10-26T10:34:12.838Z
 ---
 
 JARVIS 2.0 Tactical Neural Interface di PC Node 01:
@@ -20,6 +20,7 @@ JARVIS 2.0 Tactical Neural Interface di PC Node 01:
    - Desktop Shortcut: `C:\Users\yonat\Desktop\JARVIS 2.0.lnk`.
 3. **Voice Engine**:
    - TTS: Microsoft Edge TTS `en-GB-RyanNeural` (Jarvis British) & `id-ID-ArdiNeural` (Indonesian), persistent streaming di port 3002 via `tts_service.py` dengan `WordBoundary` alignment metadata, respons cached ~10ms, uncached ~1.4s (5x lebih cepat).
+   - Eksekusi Latar Belakang Senyap (Zero-Flicker): `tts_service.py` dan `global_trigger.py` WAJIB dipanggil dengan `pythonw` dan flag `windowsHide: true` di Node.js spawn untuk mencegah Windows Terminal memunculkan jendela hitam kosong (`cpython.../python.exe`).
    - Subtitle Sync: Teks balasan muncul per-kata sinkron persis dengan timeline audio playback (`X-Word-Timings` header via Edge-TTS `WordBoundary`), menghilangkan lag dan premature render.
    - STT: Browser Web Speech API dengan timer jeda hening 1.2 detik (alami dan cepat).
    - LLM: 9router `http://127.0.0.1:20128` model `campur`.

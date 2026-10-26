@@ -53,7 +53,8 @@ class GboardMicApp:
         self.device_name = ""
         self.device_cat = "Default"
         self.recognizer = sr.Recognizer()
-        self.target_hwnd = None
+        self.my_pid = os.getpid()
+        self.target_hwnd = user32.GetForegroundWindow()
         self.root_hwnd = None
 
         self._build_ui()
@@ -62,8 +63,8 @@ class GboardMicApp:
         self._setup_hotkey()
         self._start_worker()
 
-        self.root.after(100, self._capture_root_hwnd)
-        self.root.after(200, self._poll_target_window)
+        self.root.after(80, self._capture_root_hwnd)
+        self.root.after(150, self._poll_target_window)
         self.root.after(35, self._update_visualizer)
 
     def _build_ui(self):
@@ -153,14 +154,26 @@ class GboardMicApp:
         self.canvas_wave.bind("<B1-Motion>", do_drag)
 
     def _capture_root_hwnd(self):
-        self.root_hwnd = user32.GetForegroundWindow()
+        # Ambil HWND top-level widget ini dan pasang WS_EX_NOACTIVATE agar klik tidak mencuri fokus teks
+        hwnd = user32.GetParent(self.root.winfo_id())
+        self.root_hwnd = hwnd if hwnd else self.root.winfo_id()
+        GWL_EXSTYLE = -20
+        WS_EX_NOACTIVATE = 0x08000000
+        try:
+            ex_style = user32.GetWindowLongW(self.root_hwnd, GWL_EXSTYLE)
+            user32.SetWindowLongW(self.root_hwnd, GWL_EXSTYLE, ex_style | WS_EX_NOACTIVATE)
+        except Exception:
+            pass
 
     def _poll_target_window(self):
         fg = user32.GetForegroundWindow()
-        # Simpan window aktif pengguna selain window widget ini
-        if fg and fg != self.root_hwnd and fg != self.root.winfo_id():
-            self.target_hwnd = fg
-        self.root.after(200, self._poll_target_window)
+        if fg and fg != self.root_hwnd:
+            wnd_pid = ctypes.c_ulong()
+            user32.GetWindowThreadProcessId(fg, ctypes.byref(wnd_pid))
+            # HANYA simpan jika window milik aplikasi luar (bukan milik gboard_mic)
+            if wnd_pid.value != self.my_pid:
+                self.target_hwnd = fg
+        self.root.after(150, self._poll_target_window)
 
     def _update_visualizer(self):
         # Smoothing volume decay
@@ -328,6 +341,13 @@ class GboardMicApp:
         self.last_toggle_time = now
 
         if from_hotkey:
+            # Rekam target window aktif tepat saat double-tap ditekan
+            cur_fg = user32.GetForegroundWindow()
+            if cur_fg and cur_fg != self.root_hwnd:
+                wnd_pid = ctypes.c_ulong()
+                user32.GetWindowThreadProcessId(cur_fg, ctypes.byref(wnd_pid))
+                if wnd_pid.value != self.my_pid:
+                    self.target_hwnd = cur_fg
             # Hapus 2 karakter spasi yang sempat terketik saat double-tap
             self._send_backspaces(2)
 
@@ -368,21 +388,33 @@ class GboardMicApp:
     def _paste_text(self, text: str):
         if not text:
             return
-        # Tambahkan spasi di ujung agar kata tersambung alami
-        pyperclip.copy(text.strip() + " ")
+        payload = text.strip() + " "
 
-        if self.target_hwnd:
-            user32.SetForegroundWindow(self.target_hwnd)
-            time.sleep(0.06)
+        # Salin ke clipboard dengan retry bila clipboard sedang sibuk
+        for _ in range(3):
+            try:
+                pyperclip.copy(payload)
+                break
+            except Exception:
+                time.sleep(0.02)
+
+        # Pastikan window target aktif
+        if self.target_hwnd and user32.IsWindow(self.target_hwnd):
+            cur_fg = user32.GetForegroundWindow()
+            if cur_fg != self.target_hwnd:
+                user32.SetForegroundWindow(self.target_hwnd)
+                time.sleep(0.04)
 
         # Kirim Ctrl + V
         VK_CONTROL = 0x11
         VK_V = 0x56
         KEYEVENTF_KEYUP = 0x0002
         user32.keybd_event(VK_CONTROL, 0, 0, 0)
+        time.sleep(0.02)
         user32.keybd_event(VK_V, 0, 0, 0)
-        time.sleep(0.03)
+        time.sleep(0.04)
         user32.keybd_event(VK_V, 0, KEYEVENTF_KEYUP, 0)
+        time.sleep(0.02)
         user32.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0)
 
     def _reset_ui(self, msg: str = "Spasi 2x: Bicara"):
