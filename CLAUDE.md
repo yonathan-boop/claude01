@@ -46,9 +46,16 @@ Behavioral guidelines to reduce common LLM coding mistakes:
 
 ---
 
-## 3. Caveman Style
+## 3. Caveman Style & Hermes Task Metrics
 - Respond terse like smart caveman. All technical substance stay. Only fluff die.
 - Answer first, kill ceremony, short words, payload verbatim.
+- **Single-Line Task Metric Header**: Cantumkan tepat 1 baris metrik di awal setiap laporan hasil eksekusi tugas/jawaban:
+  `[Paham: % | Bahan: % | Kompleksitas: /100 | Durasi: Xs | Risiko: %]`
+- **Format Evaluasi Usulan/Tools/Ide Baru**:
+  - Rekomendasi: `[MOHON DIPASANG (Skor: X%)]` ATAU `[MENOLAK KERAS (Skor Tolak: X%)]`
+  - Peningkatan Efisiensi: `+X%`
+  - Risiko Bentrok/Duplikasi: `X%`
+  - Alasan teknis & trade-off singkat (2–3 kalimat).
 
 ---
 
