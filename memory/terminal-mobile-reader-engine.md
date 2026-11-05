@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 5c02ae63-a9ad-47d1-a6b8-e92acf72fef9
-  modified: 2026-11-05T10:40:55.097Z
+  modified: 2026-11-05T10:52:30.373Z
 ---
 
 # Terminal Mobile Reader Engine (Mode Rapi)
@@ -48,3 +48,8 @@ Memisahkan proses eksekusi CLI (tetap berjalan di background ConPTY) dari lapisa
      * Gelembung Pesan Pengguna: Kartu Biru Navy elegan (`#bfdbfe`).
      * Teks Paragraf Biasa: Abu Slate ramah mata (`#cbd5e1`), tidak menyilaukan.
    - **Deduplikasi Prompt Bertingkat**: Mengatasi bug pesan ganda berulang (seperti 5x pesan yang sama di drawer dan tampilan chat) akibat *terminal character echo* atau *re-render* TUI ConPTY, sehingga setiap instruksi user hanya tampil tepat 1 kali.
+6. **Buku Besar Prompt Persisten (`localStorage` per Sesi)**:
+   - **Akar Masalah Reset ke 0**: Sebelumnya riwayat prompt hanya disimpan di variabel memori JS dan mengandalkan pembacaan layar xterm. Begitu respon AI melebihi 30 baris (tinggi layar terminal), prompt terdorong keluar dari buffer alternate screen (`baseY === 0`), sehingga saat browser di-refresh atau dibuka ulang, counter kembali menjadi 0 pesan.
+   - **Solusi Buku Besar Persisten**: Menyimpan riwayat prompt secara otomatis dan permanen di `localStorage` per ID sesi (`ssh_prompts_${sessionId}`) seketika user menekan tombol Kirim.
+   - **Tahan Refresh & Antar Sesi Mandiri**: Riwayat pesan tidak pernah ter-reset ke 0 meskipun halaman di-refresh, browser ditutup, atau koneksi terputus. Tiap tab terminal memiliki daftar riwayatnya masing-masing secara terisolasi.
+   - **Fitur Cepat Setiap Pesan**: Setiap entri di drawer dilengkapi tombol 'Lompat ➔' (menuju posisi pesan), 'Pakai Lagi ↺' (memasukkan kembali ke kotak ketik untuk diedit/dikirim ulang), dan 'Salin 📋'.
