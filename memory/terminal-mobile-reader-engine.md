@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 5c02ae63-a9ad-47d1-a6b8-e92acf72fef9
-  modified: 2026-11-05T10:26:06.993Z
+  modified: 2026-11-05T10:40:55.097Z
 ---
 
 # Terminal Mobile Reader Engine (Mode Rapi)
@@ -39,3 +39,12 @@ Memisahkan proses eksekusi CLI (tetap berjalan di background ConPTY) dari lapisa
    - **Sticky Task Banner**: Menampilkan ringkasan tugas aktif terkini di baris teratas reader view (`📌 Tugas Terkini: "..." [Lompat ➔]`), sehingga saat user berganti-ganti terminal banyak, langsung paham tugas terminal ini dalam 0 detik tanpa perlu mencari-cari ke atas.
    - **Drawer Riwayat Pesan (`💬 N`)**: Tombol header yang membuka modal bottom sheet berisi semua riwayat prompt user (#1, #2, #3, ...) dari yang terbaru. Mengetuk item langsung melakukan *smooth-scroll* ke posisi pesan tersebut dan memicu animasi pulse glow biru terang (`.reader-prompt-highlight`).
    - **Tombol Navigasi Toolbar (`▲ Prompt` / `▼ Prompt`)**: Melompat mundur/maju antar pesan user secara instan langsung dari toolbar chip bawah dengan notifikasi toast urutan pesan.
+5. **Hierarki Warna Semantik & Deduplikasi Prompt (Anti-Spam)**:
+   - **Pewarnaan Semantik Kaya (Tidak Lagi Putih Monoton)**:
+     * Judul / Header Seksi: Biru Langit cerah (`#38bdf8`).
+     * Kata Kunci / Teks Tebal (`**...**`): Kuning Emas / Amber Gold (`#fbbf24`) agar langsung tertangkap mata saat *scanning* cepat.
+     * Kode / Path / Perintah (`code`): Hijau Zamrud (`#34d399`) dengan kontras tinggi.
+     * Eksekusi Tool CLI: Ungu Violet (`#c084fc`).
+     * Gelembung Pesan Pengguna: Kartu Biru Navy elegan (`#bfdbfe`).
+     * Teks Paragraf Biasa: Abu Slate ramah mata (`#cbd5e1`), tidak menyilaukan.
+   - **Deduplikasi Prompt Bertingkat**: Mengatasi bug pesan ganda berulang (seperti 5x pesan yang sama di drawer dan tampilan chat) akibat *terminal character echo* atau *re-render* TUI ConPTY, sehingga setiap instruksi user hanya tampil tepat 1 kali.
