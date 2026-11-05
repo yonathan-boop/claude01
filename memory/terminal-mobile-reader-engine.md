@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 5c02ae63-a9ad-47d1-a6b8-e92acf72fef9
-  modified: 2026-11-05T10:04:34.787Z
+  modified: 2026-11-05T10:26:06.993Z
 ---
 
 # Terminal Mobile Reader Engine (Mode Rapi)
@@ -35,3 +35,7 @@ Memisahkan proses eksekusi CLI (tetap berjalan di background ConPTY) dari lapisa
    - **Pembersihan Artifak Kaki-kaki**: Memfilter petunjuk status bar interaktif CLI (`to cycle`, `esc to interrupt`, `ctrl+b`) dan memformat baris eksekusi tool CLI (`└ $ Start-Process...`, `curl.exe`) menjadi badge pill terisolasi (`.reader-tool-pill`) sehingga tidak merusak kartu chat prompt user.
    - **Bottom Padding 85px**: Memberikan ruang lega di bagian bawah agar baris terakhir tidak terpotong oleh composer input bar.
    - **Strict Wrap Merge**: Hanya menyambungkan baris yang benar-benar ditandai `item.isWrapped` oleh xterm untuk mencegah kata bertumpuk atau bercampur antar-baris.
+4. **Prompt History & Quick Navigator Engine (`▲ Prompt` / `▼ Prompt` & Drawer Sheet)**:
+   - **Sticky Task Banner**: Menampilkan ringkasan tugas aktif terkini di baris teratas reader view (`📌 Tugas Terkini: "..." [Lompat ➔]`), sehingga saat user berganti-ganti terminal banyak, langsung paham tugas terminal ini dalam 0 detik tanpa perlu mencari-cari ke atas.
+   - **Drawer Riwayat Pesan (`💬 N`)**: Tombol header yang membuka modal bottom sheet berisi semua riwayat prompt user (#1, #2, #3, ...) dari yang terbaru. Mengetuk item langsung melakukan *smooth-scroll* ke posisi pesan tersebut dan memicu animasi pulse glow biru terang (`.reader-prompt-highlight`).
+   - **Tombol Navigasi Toolbar (`▲ Prompt` / `▼ Prompt`)**: Melompat mundur/maju antar pesan user secara instan langsung dari toolbar chip bawah dengan notifikasi toast urutan pesan.
