@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 5c02ae63-a9ad-47d1-a6b8-e92acf72fef9
-  modified: 2026-11-05T10:52:30.373Z
+  modified: 2026-11-05T11:14:56.689Z
 ---
 
 # Terminal Mobile Reader Engine (Mode Rapi)
@@ -53,3 +53,6 @@ Memisahkan proses eksekusi CLI (tetap berjalan di background ConPTY) dari lapisa
    - **Solusi Buku Besar Persisten**: Menyimpan riwayat prompt secara otomatis dan permanen di `localStorage` per ID sesi (`ssh_prompts_${sessionId}`) seketika user menekan tombol Kirim.
    - **Tahan Refresh & Antar Sesi Mandiri**: Riwayat pesan tidak pernah ter-reset ke 0 meskipun halaman di-refresh, browser ditutup, atau koneksi terputus. Tiap tab terminal memiliki daftar riwayatnya masing-masing secara terisolasi.
    - **Fitur Cepat Setiap Pesan**: Setiap entri di drawer dilengkapi tombol 'Lompat ➔' (menuju posisi pesan), 'Pakai Lagi ↺' (memasukkan kembali ke kotak ketik untuk diedit/dikirim ulang), dan 'Salin 📋'.
+7. **Perbaikan Spasi Non-Breaking (` `) & Anti-Spam Redraw Claude Code**:
+   - **Akar Masalah Non-Breaking Space**: Claude Code CLI menggunakan simbol `❯ ` (karakter spasi `0xC2 0xA0`, bukan spasi ASCII biasa). Akibatnya `startsWith('❯ ')` gagal mencocokkan prompt dan counter selalu 0. Dilakukan normalisasi global `  -> ' '` dan regex `/^[>❯❯]\s*(.+)/`.
+   - **Akar Masalah Balasan Terulang 7 Kali (Spam)**: Ketika Claude sedang memproses perintah, antarmuka Ink/React CLI me-*redraw* pesan antrean bersama teks `ctrl+x ctrl+s to send now` dan `Press up to edit queued messages` setiap putaran spinner. ConPTY merekam setiap putaran layar itu ke scrollback. Diterapkan pembersihan trailing widget CLI dan pelacak `seenPromptTexts` global sehingga tiap pesan hanya tampil tepat 1 kali di layar.
