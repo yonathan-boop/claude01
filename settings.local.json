@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(node -c \"C:\\\\Users\\\\yonat\\\\dashboard\\\\services\\\\terminal-hub.js\")",
+      "PowerShell($res = Invoke-WebRequest -Uri \"http://127.0.0.1:8901/ssh/\" -UseBasicParsing; $res.StatusCode)"
+    ]
+  }
+}

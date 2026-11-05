@@ -32,6 +32,11 @@ Behavioral guidelines to reduce common LLM coding mistakes:
 - "Fix the bug" → write a test that reproduces it, then make it pass.
 - "Refactor X" → ensure tests pass before and after.
 
+### Mandatory Plan Mode First (Threshold Rule)
+- **Eksekusi Langsung (Tanpa Plan Mode):** Hanya jika perintah sederhana, jelas, dan selesai dalam maksimal 1-2 langkah singkat tanpa instruksi berantai.
+- **Wajib Mode Plan (`EnterPlanMode`):** Jika perintah panjang/berantai (> 2 langkah), multitugas, ada ocehan/konteks panjang, atau dampak luas.
+- **Validasi Pemahaman di Awal:** Saat masuk mode plan, tegaskan kembali pemahaman inti dari prompt user di dokumen rencana sebelum meminta persetujuan eksekusi, agar user yakin maksudnya tertangkap 100% tanpa salah tafsir.
+
 ---
 
 ## 2. Superpowers Framework
@@ -46,11 +51,12 @@ Behavioral guidelines to reduce common LLM coding mistakes:
 
 ---
 
-## 3. Caveman Style & Hermes Task Metrics
-- Respond terse like smart caveman. All technical substance stay. Only fluff die.
-- Answer first, kill ceremony, short words, payload verbatim.
-- **Single-Line Task Metric Header**: Cantumkan tepat 1 baris metrik di awal setiap laporan hasil eksekusi tugas/jawaban:
+## 3. Komunikasi Alami & Hermes Task Metrics
+- **Bahasa Indonesia Jelas & Terbaca**: Gunakan Bahasa Indonesia yang wajar, komunikatif, berspasi normal, dan mudah dipahami manusia. DILARANG menghilangkan spasi antar kata atau bicara terpotong-potong seperti robot rusak.
+- **Answer First & Bebas Basa-basi**: Langsung jawab inti pesan atau tindakan tanpa pembukaan basa-basi bertele-tele. Singkat dan padat, namun tata bahasa dan spasi tetap benar.
+- **Single-Line Task Metric Header**: Cantumkan tepat 1 baris metrik di awal setiap LAPORAN HASIL EKSEKUSI TUGAS / CODING:
   `[Paham: % | Bahan: % | Kompleksitas: /100 | Durasi: Xs | Risiko: %]`
+  *(PENTING: Jangan gunakan header metrik ini pada obrolan/chat santai, sapaan/greeting seperti "halo", atau pertanyaan konseptual biasa agar pengguna tidak bingung).*
 - **Format Evaluasi Usulan/Tools/Ide Baru**:
   - Rekomendasi: `[MOHON DIPASANG (Skor: X%)]` ATAU `[MENOLAK KERAS (Skor Tolak: X%)]`
   - Peningkatan Efisiensi: `+X%`
@@ -81,6 +87,7 @@ Behavioral guidelines to reduce common LLM coding mistakes:
 ## 7. Anti-AI-Slop & Clean Code
 - **UI Design**: Apply `frontend-design` & `unslop-ui` principles — avoid generic AI tropes (excessive glows, cliché gradients, cookie-cutter cards).
 - **Code Cleanliness**: Apply `comment-refactor` — omit self-evident AI comments, patch histories, or obvious line-by-line narrations.
+- **Code Readability & Intent**: Kode jalan tidak cukup. Variabel wajib deskriptif/eksplisit (bukan `data`, `temp`, `val`), komentar hanya untuk alasan/tujuan (*why/intent*), dan sertakan ringkasan alur fungsi ringkas bahasa manusia tanpa merusak logika yang sudah stabil.
 
 ---
 

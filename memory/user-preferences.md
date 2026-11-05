@@ -5,9 +5,10 @@ metadata:
   node_type: memory
   type: user
   originSessionId: d395a062-c292-4abe-8a50-1ce710e2b1f6
-  modified: 2026-10-25T16:08:46.551Z
+  modified: 2026-11-04T15:05:22.742Z
 ---
 
+- User: Yonathan.
 - Environment: Windows 11 Home, PowerShell 5.1, Windows Terminal Quake mode (`Win + ` `).
 - Strict platform rule: Windows 11 / PowerShell native only (NOT Linux/WSL/Ubuntu). Never suggest Linux commands (`apt`, `sudo`, `tmux`, etc.).
 - Tooling: Does not use VS Code; operates primarily via Windows Terminal and CLI.
@@ -32,6 +33,9 @@ metadata:
 7. **Personalisasi & Adaptasi Mandiri:** Jadikan skill/referensi luar sebagai milik 01 sendiri (personalisasi nama, struktur, arsitektur bersih di domain 01), bukan copy-paste mentah ke folder referensi.
 8. **Auto-Record Saat Kata 'Berhasil':** Setiap kali user menyatakan 'berhasil', wajib detik itu juga memvalidasi dan mencatat arsitektur/solusi/status yang sukses ke persistent memory (`memory/`) tanpa disuruh ulang.
 9. **Transparansi Pekerjaan (Wajib Terlihat & Terlacak):** Setiap proses eksekusi, status kerja, atau delegasi tugas (misal lempar ke Claude Code di terminal / PTY / PowerShell) WAJIB terlihat gamblang secara visual di HUD / status. User tidak boleh dibiarkan menebak apakah AI sedang bekerja, stuck, sudah sampai mana, atau didelegasikan ke mana.
+10. **Plan Mode Threshold (Sederhana vs Berantai):**
+    - **Eksekusi Langsung:** Maksimal 1-2 langkah singkat, jelas, tanpa instruksi berantai/konteks panjang.
+    - **Wajib Mode Plan (`EnterPlanMode`):** Perintah panjang, berantai (> 2 langkah), multitugas, atau ocehan panjang. Di awal rencana, tegaskan rangkuman pemahaman maksud user dan langkah kerja sebelum minta approval eksekusi.
 
 ## RACUN (Pantangan Mutlak / Red Lines):
 1. **Panggilan:** DILARANG menyebut nama user ("Pak Yonathan" dsb). Langsung ke topik atau panggil 'Anda'.

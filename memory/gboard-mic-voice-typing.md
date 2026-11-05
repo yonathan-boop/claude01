@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 12b0c24a-39bb-4892-a452-475a8c20d8d9
-  modified: 2026-10-26T10:41:31.075Z
+  modified: 2026-10-29T11:04:07.145Z
 ---
 
 # Gboard Mic for Windows (Voice Typing)
@@ -13,11 +13,15 @@ metadata:
 Widget mic melayang di Windows (`C:\Users\yonat\gboard_mic.py`) yang ditrigger via Spasi 2x (Double-Tap Spasi) untuk mendikte suara Bahasa Indonesia ke teks via Google Speech Recognition API.
 
 **Arsitektur & Fitur Utama:**
-1. **Auto-Prioritas USB Mic:**
-   - Secara otomatis mendeteksi perangkat audio dengan nama `USB` (misal `Microphone (USB2.0 Device)`).
-   - Fallback otomatis ke Headset fisik/Bluetooth (misal `Baseus Bowie MC1`).
-   - Memblokir `Virtual Mic for AudioRelay` yang menghasilkan desibel 0/peak 1 (hening).
-   - Re-scan dinamis saat tombol rekam ditekan tanpa perlu me-restart aplikasi jika mic USB dicabut-colok.
+1. **Auto-Prioritas & Pemilihan Manual USB Mic:**
+   - Dropdown badge interaktif (`USB ▾`) pada widget: klik kiri / klik kanan di widget membuka popup menu daftar mic aktif.
+   - Pilihan mic manual persisten disimpan ke `~/.gboard_mic_config.json`.
+   - Dynamic PortAudio re-init (`sd._terminate(); sd._initialize()`): mendeteksi mic USB baru dicolok secara on-the-fly tanpa perlu me-restart aplikasi.
+   - Rescan manual via menu "🔄 Pindai Ulang Mic".
+2. **Sensitivitas Ekstra Tinggi (4x Digital Preamp Boost):**
+   - Mengatasi mic USB/kondensor yang volume tangkapannya kecil atau user duduk jauh (1-2 meter).
+   - Profil sensitivitas via menu: Paling Tinggi (Gain 4.0x, VAD 40 - Default), Tinggi (2.5x, 70), Normal (1.0x, 120).
+   - Suara dikuatkan sebelum VAD & Google Speech API sehingga kata tertangkap jelas tanpa perlu mendekatkan mulut.
 2. **Visualizer Waveform Naik-Turun (Live Equalizer):**
    - Canvas Tkinter 5 bar dinamis beranimasi 30 FPS (`_update_visualizer`).
    - Saat merekam, tinggi bar bergerak real-time mengikuti amplitudo/desibel input suara (hijau -> toska -> merah muda) sebagai bukti visual suara masuk.

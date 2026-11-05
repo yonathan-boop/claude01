@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 45dd8b74-3eb6-4e92-b7eb-3cf817f031c5
-  modified: 2026-10-23T13:10:21.712Z
+  modified: 2026-11-05T01:08:45.392Z
 ---
 
 # Aturan Baku Editing Naskah Soal Ujian SD (Methodist-11)
@@ -13,9 +13,11 @@ metadata:
 ## 1. Spesifikasi Dokumen
 - **Ukuran Kertas**: Folio / F4 (`21.59 cm x 33.02 cm` / `8.5 x 13.0 inci`).
 - **Margin Halaman**: Atas/Bawah `0.5 cm`, Kiri/Kanan `1.0 cm` di seluruh sections.
-- **Penamaan File**:
-  - File draft/kerja: Tetap nama asal (misal `Agama 1 Rio OK.docx`).
-  - Setelah fix dan di-ACC user: Tambahkan kata `edit` (misal `Agama 1 Rio OK edit.docx`).
+- **Penamaan File (Aturan Mutlak Anti-Label OK Palsu)**:
+  - **HAK KITA HANYA MENAMBAH KATA `edit`**: Bagian kita adalah unit editing layout, BUKAN bagian pemeriksaan/verifikasi. Label `OK` hanya sah dicantumkan oleh tim pemeriksa naskah.
+  - **DILARANG KERAS MENAMBAH KATA `OK`**:
+    - Jika nama berkas asal TIDAK ada kata `OK` (misal: `Bahasa Inggris 6 Winna.docx`), hasil edit WAJIB bernama: `Bahasa Inggris 6 Winna edit.docx` (DILARANG menambahkan `OK`).
+    - KECUALI jika dari naskah mentah guru memang SUDAH ada kata `OK` sejak awal (misal: `Agama 1 Rio OK.docx`), maka hasil editnya menjadi: `Agama 1 Rio OK edit.docx`.
 - **Backup Internal**: Wajib di-backup ke internal storage Claude (`memory/backups/`) sebelum diedit. Folder kerja user harus tetap bersih.
 
 ## 2. Struktur Section & Kolom Baku

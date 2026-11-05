@@ -45,7 +45,7 @@ def validate(doc_path):
 
         doc.Close(False)
     finally:
-        word.Quit()
+        pass  # DILARANG memanggil word.Quit() agar tidak menutup dokumen Word pengguna yang sedang aktif!
 
     print(f"=== VALIDATION REPORT: {len(anomalies)} anomalies found ===")
     for a in anomalies:

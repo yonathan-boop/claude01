@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: a6562376-15b8-410d-9b8f-e803f7a93d16
-  modified: 2026-10-26T01:03:22.890Z
+  modified: 2026-11-04T01:00:09.507Z
 ---
 
 Server YN berjalan dengan arsitektur **Local Microservices via PM2** dengan Reverse Proxy Gateway di port 8900 dan di-expose publik via Cloudflare Tunnel (`https://serveryn.my.id`).
@@ -21,13 +21,21 @@ Server YN berjalan dengan arsitektur **Local Microservices via PM2** dengan Reve
    - Melayani web sekolah dari `Desktop/Claude/projects/m11-website`.
 4. **Second Brain (Port 8903)** (`services/second-brain.js`):
    - Melayani UI & API Obsidian markdown vault di `Documents/SecondBrain`.
-5. **JARVIS 2.0 Tactical HUD (Port 3000)** (`C:\Users\yonat\jarvis-hud\server.js`):
-   - Antarmuka Holographic Three.js, Voice Engine Edge-TTS (port 3002), Claude Fleet Manager, integrasi 9Router port 20128. Menggantikan Voice Agent lama port 8904. Rute reverse proxy gateway: `/jarvis/`, `/voice/`, `/voice.html` (redirect), dan subdomains `jarvis.*`, `voice.*`.
+5. **Claude Live Voice & Context Assistant (Port 3000)** (`services/claude-live.js`):
+   - Asisten suara cerdas pengganti Jarvis. Terhubung ke sensor konteks real-time: active GUI windows, clipboard, buffer terminal ConPTY (`/api/pty/tail`), dan kondisi hardware.
+   - Otak: 9Router model `claude-3-7-sonnet-20250219` multi-turn conversation memory.
+   - Suara: Persistent Python Edge-TTS (`services/tts_service.py` port 3002, Ardi/Ryan) + fallback Web Speech API.
+   - UI: OLED Deep Dark di `public/voice.html`, waveform visualizer ringan (<1% CPU). Rute reverse proxy gateway: `/voice/`, `/claude-live/`, `/jarvis/`, dan subdomains `voice.*`, `live.*`, `jarvis.*`.
 6. **Dashboard UI & Core APIs (Port 8905)** (`services/dashboard.js`):
    - Dashboard monitor RAM/CPU, `/api/status`, Universal Node Hub (RPC Node 01 <-> Node 02), upload gambar.
-7. **Native SSH Server (Port 2222)** (`ssh-server.js`):
+7. **Hermes Agent Dashboard (Port 9119)** (`services/hermes-dashboard.js`):
+   - Web Dashboard resmi Hermes Agent (`hermes dashboard --port 9119 --no-open --skip-build`).
+   - Reverse proxy gateway rute: `/hermes/` dan subdomain `hermes.*` / `helmet.*`.
+   - Host header sanitization ke `127.0.0.1:9119` & `x-forwarded-prefix: /hermes`.
+   - WebSocket passthrough rewrite (`Host` & `Origin` ke loopback) untuk TUI console (`/api/console`) & PTY bridge (`/api/pty`).
+8. **Native SSH Server (Port 2222)** (`ssh-server.js`):
    - Akses langsung Termux / PC remote via SSH protocol (`ssh2`).
-8. **Cloudflare Tunnel Supervisor** (`services/tunnel.js`):
+9. **Cloudflare Tunnel Supervisor** (`services/tunnel.js`):
    - Mengawasi proses `cloudflared.exe` agar tunnel `serveryn.my.id` selalu aktif.
 
 ## Manajemen Proses & Self-Healing:
@@ -40,6 +48,7 @@ Server YN berjalan dengan arsitektur **Local Microservices via PM2** dengan Reve
    - `server.js` otomatis menjalankan dan mengawasi proses `cloudflared.exe`. Jika tunnel drop atau dihentikan, auto-restart dalam 3 detik.
 4. **Auto-Watchdog Tiap 5 Menit (Task Scheduler)**:
    - Task: `ServerYN-Watchdog` di Windows Task Scheduler.
+   - Launcher: `wscript.exe "C:\Users\yonat\dashboard\watchdog.vbs"` (eksekusi murni GUI/silent tanpa flicker pop-up console window).
    - Script: `C:\Users\yonat\dashboard\watchdog.ps1`.
    - Tiap 5 menit ping `http://127.0.0.1:8900/api/status`. Jika server/tunnel mati, watchdog otomatis memanggil `start.ps1` dan mencatat log ke `watchdog.log`.
    - Menjaga tunnel 9Router tetap online self-healing secara otomatis.
@@ -76,6 +85,8 @@ Server YN berjalan dengan arsitektur **Local Microservices via PM2** dengan Reve
 11. **ConPTY Windows & Task Scheduler Working Directory**:
    - `node-pty` di Windows memanggil `conptyNative.startProcess(file, ...)` (`CreateProcess(lpApplicationName, ...)`). Jika `file` hanya `'cmd.exe'` dan CWD dari Task Scheduler adalah `C:\Windows\System32`, Windows melempar `Error: File not found:`.
    - Solusi: `server.js` selalu resolve executable path absolut via `resolveShellPath()` (`ComSpec` / full path powershell). `start.ps1`, `watchdog.ps1`, dan Action Task Scheduler selalu pakai `-WorkingDirectory C:\Users\yonat\dashboard`.
+12. **Proteksi Sesi Aktif Terminal-Hub (Zero Disruption)**:
+   - Dilarang menjalankan `pm2 restart terminal-hub` saat sesi chat Claude Code aktif jika sesi dipanggil dari dalam web terminal ConPTY. File frontend di `dashboard/public/` (seperti `ssh.html`) di-read langsung on-demand per request tanpa perlu restart proses Node.js.
 
 **Why:** Mencegah amnesia konteks pada sesi chat baru saat troubleshooting atau mengembangkan Server YN.
 **How to apply:** Saat ada request terkait server YN, terminal, dashboard, atau Cloudflare tunnel, langsung rujuk direktori `C:\Users\yonat\dashboard`.

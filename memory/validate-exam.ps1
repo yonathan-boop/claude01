@@ -58,7 +58,7 @@ try {
     $doc.Close([Microsoft.Office.Interop.Word.WdSaveOptions]::wdDoNotSaveChanges)
 } finally {
     if ($word) {
-        $word.Quit()
+        # DILARANG memanggil $word.Quit() agar tidak menutup dokumen Word pengguna yang sedang aktif!
         [System.Runtime.Interopservices.Marshal]::ReleaseComObject($word) | Out-Null
     }
 }

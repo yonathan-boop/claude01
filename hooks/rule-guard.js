@@ -1,17 +1,39 @@
 'use strict';
 
+/**
+ * SISTEM PAGAR FISIK KERNEL (RULE ENFORCEMENT ENGINE 01)
+ *
+ * Alur Sistem dalam Bahasa Manusia:
+ * 1. Setiap kali Claude Code ingin menjalankan tool (Write, Edit, PowerShell, Bash),
+ *    perintah dicegat di sini SEBELUM menyentuh sistem operasi Windows.
+ * 2. Data input dibaca dari stdin dalam format JSON.
+ * 3. File aturan permanen ('permanent-rules.json') dibaca untuk mencocokkan target/pola terlarang.
+ * 4. Jika ada pelanggaran, sistem memutus eksekusi seketika (Exit code 2) dan mengirim pesan blokir.
+ * 5. Jika aman, sistem mengizinkan eksekusi tanpa hambatan (Exit code 0).
+ */
+
 const fs = require('fs');
 const path = require('path');
 
 const userHome = process.env.USERPROFILE || process.env.HOME || 'C:\\Users\\yonat';
 const rulesFile = path.join(userHome, '.claude', 'rules', 'permanent-rules.json');
 
-function normalizePath(p, baseDir) {
-  if (!p) return '';
-  const resolved = path.isAbsolute(p) ? path.resolve(p) : path.resolve(baseDir || process.cwd(), p);
-  return resolved.toLowerCase().replace(/[\/\\]+/g, '\\');
+/**
+ * Fungsi: Menyamakan format path Windows agar kebal terhadap variasi garis miring dan huruf besar/kecil.
+ * Alur: Mengubah path relatif jadi absolut, huruf kecil semua, dan ganti semua slash ganda menjadi backslash tunggal.
+ * Tujuan: Mencegah AI mengelabui pagar dengan trik ../, huruf besar, atau forward slash.
+ */
+function normalizePath(rawPath, baseDirectory) {
+  if (!rawPath) return '';
+  const resolvedPath = path.isAbsolute(rawPath) ? path.resolve(rawPath) : path.resolve(baseDirectory || process.cwd(), rawPath);
+  return resolvedPath.toLowerCase().replace(/[\/\\]+/g, '\\');
 }
 
+/**
+ * Fungsi: Mode Darurat (Fail-Closed) bila file aturan rusak atau tidak terbaca.
+ * Alur: Jika ada file konfigurasi hilang atau JSON korup, tolak semua operasi apapun dan keluar dengan kode error 2.
+ * Tujuan: Jangan biarkan operasi berjalan tanpa perlindungan; lebih baik berhenti daripada sistem rentan rusak.
+ */
 function failClosed(errMessage) {
   const errOutput = {
     hookSpecificOutput: {
@@ -25,6 +47,11 @@ function failClosed(errMessage) {
   process.exit(2);
 }
 
+/**
+ * Fungsi: Menolak eksekusi tool yang melanggar aturan aktif.
+ * Alur: Merangkum identitas aturan yang dilanggar, detail pelanggaran, menulis JSON penolakan ke stdout, dan stop proses.
+ * Tujuan: Menghentikan aksi AI sebelum file diubah atau perintah terminal dijalankan.
+ */
 function blockOperation(rule, detail) {
   const blockOutput = {
     hookSpecificOutput: {
@@ -87,7 +114,12 @@ process.stdin.on('end', () => {
 
   const activeRules = (config.rules || []).filter(r => r.status === 'active');
 
-  // Check 1: File modification tools (Write, Edit, MultiEdit)
+  // ---------------------------------------------------------------------------
+  // FILTER 1: Proteksi Alat Modifikasi Berkas Langsung (Write, Edit, MultiEdit)
+  // Alur: Mengambil path berkas target yang ingin diedit, lalu membandingkannya
+  // dengan daftar folder/file terlarang yang ada di aturan permanen.
+  // Tujuan: Mencegah Claude merusak file kritis atau folder sensitif secara langsung.
+  // ---------------------------------------------------------------------------
   if (['Write', 'Edit', 'MultiEdit'].includes(toolName)) {
     const rawFilePath = toolInput.file_path || toolInput.filePath || toolInput.path || '';
     const targetNorm = normalizePath(rawFilePath, cwd);
@@ -96,11 +128,11 @@ process.stdin.on('end', () => {
       if (rule.forbidden_tools && rule.forbidden_tools.includes(toolName)) {
         for (const ruleTarget of (rule.targets || [])) {
           const ruleNorm = normalizePath(ruleTarget, cwd);
-          // Check exact match or subdirectory match
+          // Cek kesamaan path persis atau apakah target berada di dalam subdirektori terproteksi
           if (targetNorm === ruleNorm || targetNorm.startsWith(ruleNorm + '\\')) {
             blockOperation(rule, `Mencoba menjalankan ${toolName} pada target terproteksi: ${rawFilePath}`);
           }
-          // If rule target is a single file name (no path separator), check basename match
+          // Jika target aturan hanya berupa nama file tanpa path, cek kesamaan nama dasar (basename)
           if (!ruleTarget.includes('\\') && !ruleTarget.includes('/') && path.basename(targetNorm) === ruleNorm) {
             blockOperation(rule, `Mencoba menjalankan ${toolName} pada file terproteksi: ${rawFilePath}`);
           }
@@ -109,13 +141,18 @@ process.stdin.on('end', () => {
     }
   }
 
-  // Check 2: Terminal Execution (PowerShell, Bash)
+  // ---------------------------------------------------------------------------
+  // FILTER 2: Proteksi Terminal Shell (PowerShell, Bash)
+  // Alur: Memeriksa teks perintah baris shell terhadap daftar regex terlarang
+  // (misal push ke repo terlarang, mematikan proses Office, atau manipulasi folder lindung).
+  // Tujuan: Mencegah bypass lewat eksekusi skrip command line / PowerShell.
+  // ---------------------------------------------------------------------------
   if (['PowerShell', 'Bash'].includes(toolName)) {
     const command = toolInput.command || '';
     const cwdNorm = normalizePath(cwd);
 
     for (const rule of activeRules) {
-      // Check terminal patterns
+      // Cek pola teks perintah terlarang langsung via Regular Expression
       if (rule.terminal_write_patterns) {
         for (const pattern of rule.terminal_write_patterns) {
           const regex = new RegExp(pattern, 'i');
@@ -125,7 +162,7 @@ process.stdin.on('end', () => {
         }
       }
 
-      // Check protected targets in directory/file context
+      // Cek apakah terminal sedang aktif di dalam folder yang dilindungi
       if (rule.targets && rule.targets.length > 0) {
         for (const target of rule.targets) {
           const targetNorm = normalizePath(target);
@@ -138,6 +175,7 @@ process.stdin.on('end', () => {
             }
           }
 
+          // Cek pola berbahaya yang menargetkan nama file terproteksi secara eksplisit
           const baseName = path.basename(target).replace('.', '\\.');
           const destructivePatterns = [
             `>\\s*.*${baseName}`,
@@ -161,6 +199,6 @@ process.stdin.on('end', () => {
     }
   }
 
-  // Allowed - clean pass
+  // Operasi lolos semua sensor pengawas: izinkan eksekusi tanpa halangan
   process.exit(0);
 });

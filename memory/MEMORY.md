@@ -4,12 +4,28 @@
 - [Agent Model Policy](agent-model-policy.md) — Wajib model campur & effort high via 9router lokal
 - [Server YN Hub](server-yn-hub.md) — arsitektur dashboard port 8900, persistent multi-CMD /ssh, Cloudflare Tunnel serveryn.my.id, proxy 3D Office
 - [Aturan Editing Soal SD](aturan-editing-soal-sd.md) — spesifikasi layout F4, kop surat 1 kolom, struktur 2 kolom, dan pipeline self-review naskah ujian SD
+- [Editor Soal Claude 01 v00.1](editor-soal-claude01.md) — engine resmi penyunting naskah soal ujian Word milik Claude 01 versi 00.1
+- [Aturan Format Kelas Default A](aturan-kelas-default-a.md) — aturan baku penamaan kelas pada kop naskah soal SD wajib berakhiran sub-kelas A secara default (contoh VIA SD, VA SD)
+- [Aturan Opsi Menyamping c, d Spasi](aturan-opsi-menyamping-cd-spasi.md) — aturan baku opsi pilihan ganda menyamping 2x2 (a, b pakai tab hanging; c, d wajib spasi tunggal tanpa tab)
+- [Aturan Penamaan Berkas Ujian (Edit vs OK)](aturan-penamaan-file-edit-vs-ok.md) — larangan mutlak menambah label OK; unit editing hanya berhak menambahkan kata edit kecuali nama asal memang sudah OK
+- [Larangan word.Quit() di Word COM](feedback-larangan-word-quit.md) — larangan mutlak memanggil word.Quit() agar tidak menutup dokumen Microsoft Word yang sedang aktif dikerjakan user
 - [Google Drive](google-drive.md) — script gdrive.js, kredensial service account, dan CLI interaksi dokumen Methodist-11
 - [Rule Enforcement Engine (Pagar Fisik)](rule-enforcement-engine.md) — arsitektur hook PreToolUse, rule-guard.js, dan permanent-rules.json di Node 01
 - [Disiplin Bedah Kode (Surgical Edits)](feedback-strict-surgical-edits.md) — teguran user: dilarang tambah elemen liar atau ubah di luar perintah spesifik
 - [Playbook Video Editing & Animasi](video-editing-playbook.md) — North Star: kurasi viral luar -> versi Indo -> edit -> upload; alur CapCut JSON hack, 2D Stick, & 3D Pixar
 - [Aturan Editing Video](aturan-editing-video.md) — North Star konten kreator, standar 1 folder tunggal, penamaan deskriptif, dan rubrik skor kelayakan tayang (<5 tolak, 6 pas-pasan, 8-9 premium)
 - [OpenJarvis 9router Bridge](openjarvis-9router-bridge.md) — bypass Ollama lokal OpenJarvis desktop via bridge shim 11434 & server 8000 ke 9router model campur
+- [Hermes Agent 9router](hermes-agent-9router.md) — konfigurasi Hermes Agent terhubung ke 9router lokal model campur via provider custom
+- [Windows Smart App Control Hermes Fix](windows-smart-app-control-hermes-python.md) — perbaikan Hermes Desktop minta setup ulang akibat Smart App Control blokir _socket.pyd
 - [JARVIS 2.0 HUD](jarvis-2-hud.md) — 3D Three.js particle orb Iron Man HUD, Double-Tap Z trigger, Edge-TTS British voice & 9router backend
+- [Claude Live Voice & Context](claude-live-voice.md) — asisten suara cerdas pengganti Jarvis di Server YN (Port 3000), sensor layar/clipboard/terminal, Edge-TTS Ardi/Ryan
 - [Checkpoint JARVIS 2.0](checkpoint-jarvis-v2.md) — titik poin stabil commit 764a6fe tag checkpoint-stable-v2 dan cara rollback instan
 - [Gboard Mic Voice Typing](gboard-mic-voice-typing.md) — floating voice typing widget Spasi 2x, auto-prioritas USB mic, waveform live visualizer, dan real-time VAD streaming
+- [Claude Video Watch Skill & Gemini](claude-video-watch-gemini.md) — skill watch (claude-video) & integrasi Gemini API key untuk inspeksi video YouTube dan file lokal
+- [Hermes Task Metric Reporting](hermes-task-metric-reporting.md) — format laporan metrik 1 baris [Paham: % | Bahan: % | Kompleksitas: /100 | Durasi: Xs | Risiko: %] & evaluasi usulan dari Hermes PC Kerja
+- [Google Flow Video Pipeline](google-flow-video-pipeline.md) — SOP produksi video fakta unik 30 detik (Portrait 9:16) via Google Flow: Character Anchor, Storyboard Prompting, & Native Timeline Stitched Export
+- [Google Flow Prompting Standards](google-flow-prompting-standards.md) — standar prompt cerewet detail material/tekstur/posisi/kontinuitas fisik di Google Flow
+- [Vibe Coding Polish](vibe-coding-polish.md) — standar variabel deskriptif, komentar why/intent, dan ringkasan fungsi manusiawi pasca kode jalan
+- [n8n Claude Code Agent](n8n-claude-agent.md) — arsitektur n8n chatbot di Server YN (/chat), engine Claude 9Router, dan eksekutor PowerShell
+- [Terminal Mobile Reader Engine](terminal-mobile-reader-engine.md) — arsitektur Mode Rapi (Reader/Chat View) dan Word Healing untuk terminal SSH di smartphone
+

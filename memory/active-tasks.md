@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 3a0d34ce-b1fc-481d-a5ab-5c73327fc550
-  modified: 2026-10-26T11:51:19.997Z
+  modified: 2026-11-05T09:45:43.182Z
 ---
 
 # Status Pekerjaan 01 (Laptop / Infra & Tooling):
@@ -23,6 +23,30 @@ metadata:
 
 ### 2. Server YN Dashboard & Persistent Multi-CMD SSH - SELESAI
 - **Hasil:**
+  - **Pembaruan Mobile Reader Mode & Word Healing Engine (2026-11-05):**
+    - **Akar Masalah:** Terminal VT100 / xterm pada layar smartphone menyusutkan lebar kolom ke 36 karakter saat ukuran font dinaikkan (16px). Akibatnya Windows ConPTY memotong kata kasar di karakter ke-36 tanpa spasi (`Reconnec` + `t:`), baris sambungan terlempar ke kolom 0 sebagai paragraf baru yang menggantung sendirian (`Raw.`, `jempol.`), dan tombol floating kanan menutupi ujung teks.
+    - **Solusi Tuntas:**
+      1. **Mode Rapi (`📄 Rapi` / `💻 Raw`):** Memisahkan eksekusi PTY dari presentasi visual mobile.
+      2. **Word Healing Engine:** Menggunakan properti `line.isWrapped` dan heuristik batas kolom ConPTY untuk merekatkan kembali kata-kata yang terbelah dua.
+      3. **Block & Bullet Grouping (`groupBlocks`):** Menggabungkan baris lanjutan ke dalam satu poin bullet (`.reader-bullet`) atau satu paragraf (`.reader-para`), sehingga tidak ada kata yang terputus atau keluar dari indentasi.
+      4. **Pembersihan UI Mobile:** Menghilangkan floating pad 4-tombol di layar HP (<480px), memindahkan `⤒ Top` & `⤓ Bawah` ke chips toolbar bawah, dan mengunci tombol unread `● Output Baru Masuk ↓` di pojok kanan bawah agar tidak melayang di tengah teks chat.
+  - **Pembaruan Mobile Viewport & Terminal Layout di HP (2026-11-05):**
+    - **Akar Masalah:** Backend PTY Hub membatasi minimal kolom PTY 80 cols (`clampCols`), sementara lebar layar HP hanya ~42-46 cols. Akibatnya teks CLI me-render 80-100 karakter, terpecah di HP, dan escape sequence cursor-up ANSI saling menimpa teks sebelumnya. Selain itu kontrol font tersembunyi di mobile dan tombol floating scroll menutupi baris ujung kanan.
+    - **Perbaikan:**
+      1. Backend `terminal-hub.js`: `clampCols` diturunkan batas minimal ke 20 cols (natural mobile viewport).
+      2. Frontend `ssh.html`: Batas resize guard diturunkan ke `cols >= 20`, default font di layar mobile otomatis `11px` (memuat ~65-70 kolom rapi), stepper font `A-`/`A+` tetap tampil di header HP, padding kanan `38px` ditambahkan agar tombol floating scroll tidak menutupi teks terminal, touch swipe diubah murni scrolling viewport tanpa injeksi panah liar, dan safe area bottom inset disematkan.
+  - **Perbaikan Input Composer Auto-Submit (2026-11-05):**
+    - **Akar Masalah:** Saat tombol "Kirim" ditekan, frontend mengirim `text + '\r'` dalam 1 paket stream sekaligus. Pada teks panjang/multiline, readline/Ink CLI (Claude Code) menganggap `\r` di ujung paket cepat sebagai pemisah baris baru (paste chunk) alih-alih penekanan tombol Enter fisik untuk submit, sehingga prompt nyangkut di baris baru dan menuntut user menekan Enter lagi di terminal.
+    - **Solusi:** `submitComposer()` di `ssh.html` memisahkan pengiriman: teks di-stream terlebih dahulu ke PTY, disusul jeda mikro 150ms agar layout buffer selesai di-render, lalu `\r` dikirim mandiri sebagai event Enter independen. Prompt langsung terkirim dan berjalan otomatis seketika tombol "Kirim" ditekan tanpa perlu Enter manual lagi.
+  - **Stabilisasi Geometri Terminal & Pembersihan Resizing ConPTY (2026-11-05):**
+    - **Akar Masalah:**
+      1. Trik goyangan mikro (`cols - 1` lalu `cols` dalam 35ms) justru merusak buffer ConPTY karena mengirim 2 aliran redraw VT100 tumpang-tindih sekaligus, menghasilkan glitch huruf bertumpuk (seperti `Goya3g Mikr});`).
+      2. Pada refresh / buka awal, browser menjalankan `fit()` sebelum font selesai di-load (`document.fonts.ready`), sehingga terminal terjebak di 80/100 kolom di layar PC desktop (dan baru melebar saat ganti tab).
+      3. Tombol Kirim / Enter pada input box mengabaikan input kosong jika terminal sedang menunggu konfirmasi/enter.
+    - **Solusi:**
+      1. Hapus total trik goyangan mikro cepat; ganti dengan `syncTerminalSize()` tunggal yang bersih.
+      2. Hubungkan ke `document.fonts.ready` + `ResizeObserver` + `requestAnimationFrame` agar terminal langsung mengukur 100% lebar layar (baik di HP maupun PC) secara instan sejak frame pertama tanpa perlu pindah tab.
+      3. Perbarui `submitComposer()`: jika input memiliki teks, kirim teks + jeda mikro 120ms + `\r`; jika input kosong, langsung kirim `\r` (Enter) ke terminal untuk meloloskan prompt yang sedang menggantung.
   - **Peningkatan Kecepatan Tab Switching (Zero-Latency Multi-Terminal):**
     - **Akar Masalah:** Tiap klik tab, server mengirim hingga 3.4 MB string teks ANSI dan browser memanggil `term.reset()` lalu me-render ulang seluruh 3.4 juta karakter (freeze 30–60 detik).
     - **Solusi:** 
@@ -30,6 +54,68 @@ metadata:
       2. Client (`ssh.html`) menggunakan arsitektur `termMap`: tiap tab terminal memiliki instance DOM xterm mandiri. Pindah antar terminal sekarang murni toggle visibility DOM (`display: block/none`), perpindahan tab menjadi **0 milidetik (instan)** tanpa loading dan tanpa re-render.
   - Endpoint `/ssh/` mendukung multiple persistent CMD tanpa mati saat server di-update.
   - Mobile UI touch scroll system aktif di HP/browser: gesture swipe 1-jari (synthetic WheelEvent untuk Claude Code / TUI buffer) + Floating Nav Pad kanan bawah (⤒, ▲, ▼, ⤓).
+  - **Pembaruan Besar Web Terminal Hub (`ssh.html` & `terminal-hub.js`):**
+    - **Mode Chat Modern (Chat View vs Raw Terminal):**
+      - Toggle instan `[💬 Chat]` dan `[⌨️ Terminal]` di header dengan state tersimpan di `localStorage`.
+      - Output terminal ConPTY otomatis disaring dari escape code ANSI dan diformat menjadi bubble chat modern (user di kanan aksen biru, terminal/AI di kiri card slate gelap).
+      - Output panjang (>25 baris) otomatis di-collapse ke accordion `📄 Tampilkan log lengkap` dengan tombol salin 📋.
+      - Input bar terpadu auto-grow, command chips, dan upload gambar langsung dari HP/desktop.
+    - **Solusi Tuntas Masalah Scroll Macet:**
+      - Hapus `touch-action: none` yang mematikan thread GPU scroll browser pada `#terminal-container`.
+      - Dual-mode gesture engine: Di normal buffer menggerakkan viewport secara fluid per-subpixel dengan momentum gliding mulus di layar 60Hz/120Hz; di alternate buffer (Claude Code/TUI) menerjemahkan swipe vertikal menjadi escape sequence arah (`\x1b[A` / `\x1b[B` atau PgUp/PgDn) sehingga history chat Claude Code dapat di-scroll lancar tanpa freeze.
+      - Sleek dark scrollbar styling yang tidak silau dan tidak terhalang floating nav.
+    - **Fitur Baru Produktivitas & Percantik UI:**
+      - **Pencarian Buffer (`Ctrl+F` & Tombol 🔍):** Navigasi pencarian teks langsung di buffer xterm tanpa dependensi luar.
+      - **Font Stepper (`A-` / `A+`):** Pengatur ukuran teks 10px–22px seketika dengan auto-fit dan tersimpan di `localStorage`.
+      - **Macro Toolbar & Custom Chips:** Tombol `Esc`, `Tab`, `Ctrl+C`, `Ctrl+D`, `Clear`, `↑`, `↓`, `↵ Enter`, shortcut makro (`git st`, `pm2`, `/compact`, `/clear`), serta tombol `+ Chip` untuk menambah perintah kustom sendiri.
+      - **Salin Cepat (Copy Helper 📋):** 1-klik untuk menyalin teks terpilih atau tampilan layar terminal ke clipboard.
+      - **Rename Tab (✎):** Klik 2x atau ikon pensil pada tab aktif untuk mengubah nama sesi terminal (tersinkron ke backend `POST /api/pty/rename`).
+      - **Tema Warna (🎨):** 4 preset tema (Obsidian Dark, Tokyo Night, Cyberpunk Neon, Matrix Green).
+      - **Mode Fullscreen (⛶):** Sembunyikan address bar browser di HP untuk area kerja maksimal.
+
+### 2.5. Studio Karakter 3D (Cyber Humanoid LED Visor, X-Bot, RobotExpressive & Cinema Director) - SELESAI
+- **Hasil:**
+  - Menyiapkan model standar industri glTF 2.0 Binary (`.glb`) dengan skinning halus dan kerangka tulang Mixamo:
+    1. **Cyber Humanoid (Model Pilihan Utama User - Opsi 1)**: Tubuh atletis stealth titanium 28k vertex dipadukan dengan layar kaca visor lengkung futuristik (gaya EVE / Daft Punk). Wajah dinamis dirender via HTML5 CanvasTexture emissive neon bercahaya 3.5x:
+       - Preset ekspresi wajah: Senyum Ceria `^ _ ^`, Bicara "Hai!" dengan gelombang suara berirama, Kedip `^ _ O`, Kaget `O _ O`, Mode Tempur `\ _ /`, Love `<3 _ <3`, dan Standby.
+       - Pilihan 5 palet warna neon (Cyan, Emerald, Magenta, Gold, Crimson) dan pengatur intensitas glow.
+       - Terpasang sebagai karakter utama di `/robot.html`.
+    2. **X-Bot Humanoid**: 28.374 vertex, 67 tulang skeleton Mixamo, PBR physical material di `/robot-xbot.html`.
+    3. **RobotExpressive**: 14 animasi skeletal mecha.
+    4. **Cinema Director (`/robot-cinema.html`)**: Koreografi 10.5 detik terkalibrasi presisi:
+       - Kamera awal 8.0 meter membelakangi robot.
+       - Robot menoleh ke KANAN menatap lensa kamera.
+       - Badan berputar ke KANAN 180° menghadap kamera.
+       - Berlari maju 4.0 meter dan berhenti tepat di jarak 4.0 meter.
+       - Melambaikan tangan dan visor LED berbicara sambil memutar audio vokal "Hai!".
+  - **Navigasi 1-Klik di Server YN**:
+    - Tombol `🤖 JARVIS` di header SSH Web (`/ssh/`) telah diganti menjadi `🤖 Robot` &rarr; langsung membuka `/robot.html` dalam 1 klik.
+    - Header dan Service Grid di Dashboard utama (`/`) disematkan tombol aksen cyan `🤖 Cyber Robot 3D ↗`.
+  - **Cinema Director 3D & Video Renderer (10.5 Detik)**:
+    - Koreografi Terkalibrasi Presisi:
+      - Jarak awal kamera 8.0 meter (robot berdiri diam membelakangi kamera).
+      - Menolehkan kepala ke KANAN melewati bahu kanan menatap tepat ke arah kamera.
+      - Seluruh badan berputar ke KANAN (searah jarum jam) 180° menghadap kamera.
+      - Berlari maju 4 meter mendekati kamera.
+      - Berhenti tepat di jarak 4.0 meter (Medium Shot proporsional, zero clipping).
+      - Melambaikan tangan kanan ramah sambil menyapa vokal "Hai!" (audio `hai.mp3`).
+    - Tooling render otomatis: Playwright WebGL headless + FFmpeg audio muxing.
+    - Video MP4 ter-render: `C:\Users\yonat\Desktop\Hasil_Edit_Video\Robot_3D_Menoleh_Lari_Melambai_Hai.mp4` (1.62 MB).
+    - Status Kirim Telegram: Berhasil terkirim ke Telegram user (`5508090479`) via `@ServerYNSystem_bot`.
+    - Akses Web Stream: `https://serveryn.my.id/shorts/Robot_3D_Menoleh_Lari_Melambai_Hai.mp4` dan Studio `https://serveryn.my.id/robot-cinema.html`.
+  - File lokal: `C:\Users\yonat\dashboard\public\robot-cinema.html`, `robot-xbot.html`, `robot.html`.
+  - Akses publik live: `https://serveryn.my.id/robot-cinema.html` dan kartu launcher di `https://serveryn.my.id/`.
+
+### 3. n8n Claude Code Agent di Server YN (`/chat`) - SELESAI
+- **Hasil:**
+  - n8n v2.46.6 terpasang & aktif sebagai microservice PM2 di port 5678.
+  - Otak AI terhubung ke 9Router lokal di port 20128 (`http://127.0.0.1:20128/v1`) dengan model `campur` / `claude-3-7`.
+  - Workflow AI Agent aktif dengan 3 tool native: `execute_powershell`, `read_file`, dan `write_file`.
+  - Web UI Chat OLED Deep Dark live di `https://serveryn.my.id/chat` dengan multi-turn session persistence.
+  - Reverse proxy gateway port 8900 dan watchdog monitoring (`watchdog.ps1`) aktif otomatis mengawasi port 5678.
+
+      - **Notifikasi Audio & Getar:** Web Audio synthesizer chime + haptic vibration otomatis saat proses panjang selesai dieksekusi di background tab.
+      - **Perbaikan Upload Gambar Subdomain:** Tambah handler `/api/upload-image` langsung di port 8901 agar tombol kamera 📷 berfungsi normal saat dibuka via `ssh.serveryn.my.id`.
   - Native Direct SSH Server aktif di port 2222 (`ssh node01@192.168.195.80 -p 2222`) passwordless + banner identitas `[NODE 01]` & prompt hijau `[01-SERVER-YN]`.
   - Akses SSH 2-Arah Penuh (Node 01 <-> Node 02 / Advan):
     - Node 02 -> Node 01: `ssh node01` (port 2222, passwordless).
@@ -47,21 +133,26 @@ metadata:
   - Watchdog guard anti-false-kill (timeout 10s + retry 3x) menjaga uptime server & SSH port 2222.
   - Power policy AC diatur Never Sleep & Lid Close Do Nothing agar koneksi tidak putus saat ditinggal.
 
-### 3. Integrasi JARVIS 2.0 HUD ke Server YN Gateway (Port 3000) & Fleet Terminal - SELESAI
+### 4. Hermes Agent 9router Model Campur - SELESAI
 - **Hasil:**
-  - Gemini Voice lama (Port 8904) resmi digantikan oleh JARVIS 2.0 Tactical HUD (`localhost:3000`).
-  - Layanan `jarvis` didaftarkan ke PM2 (`ecosystem.config.js`) auto-restart & self-healing.
-  - Gateway Rock (`services/gateway.js`) melakukan reverse proxy dual-routing.
-  - **Perbaikan Terminal Worker & Profile JARVIS (Port 3000 Live):**
-    - **Akar Masalah:**
-      1. Regex routing di `tryFastLocalAction` terlalu sempit (hanya menangkap `suruh claude`, luput pada frasa "panggil claude", "buka claude", "kamu jangan kerjakan sendiri...").
-      2. 9router berhalusinasi menghasilkan `[EXEC] Start-Process powershell...` yang berjalan tersembunyi tanpa jendela GUI di background PM2, sementara suara JARVIS mengklaim "Perintah sudah berhasil dieksekusi".
-      3. Skrip `terminal-worker.js` belum diterapkan ke folder `jarvis-hud` produksi (port 3000) dan sebelumnya terkunci opsi non-interaktif `claude -p`.
-    - **Solusi Tuntas:**
-      1. `terminal-worker.js` dipasang di `jarvis-hud`: Menjalankan Claude interaktif dengan `--name "JARVIS Worker #<slot>"` + auto-notify ke port 3000 saat selesai + shell CMD interaktif standby.
-      2. `server.js` diperbarui: Dispatcher menangkap seluruh variasi (`panggil claude`, `buka claude`, `terminal`, `profil jarvis`) dan safety guard di `runPowerShell` otomatis mengalihkan perintah claude liar ke terminal visible.
-      3. Profile `JARVIS Worker` didaftarkan ke Windows Terminal (`settings.json`) dan agent khusus `~/.claude/agents/jarvis.md` aktif.
-      4. PM2 proses 8 di-restart dan terverifikasi bersih oleh Curator.
+  - `model.default: campur` dan `model.provider: custom`.
+  - Blok `providers.9router` terpasang di `config.yaml` agar canonical identity `custom:9router` dikenali oleh Hermes v51 tanpa me-reset ke Gemini.
+  - Sesi Gemini lama dibersihkan dan cache sticky composer di `AppData\Roaming\Hermes\Local Storage` di-reset.
+
+### 5. Penghapusan Mode Chat Eksperimental & Pengembalian Terminal Native Penuh - SELESAI
+- **Hasil:**
+  - Sesuai instruksi dan persetujuan user ("hapus aja lah"), **seluruh lapisan eksperimental Mode Chat telah dihapus bersih** dari sistem Server YN (`ssh.html` dan `terminal-hub.js`).
+  - Tidak ada lagi glitch parsing bubble, teks terpotong, residu spinner (`Contemplating…`), teks banner ASCII, atau macet loading.
+  - Server YN SSH kembali 100% menggunakan tampilan **Native xterm.js Terminal murni**:
+    - Claude Code CLI berjalan dengan rendering warna native, TUI interaktif sempurna, tool call rapi, dan nol artefak.
+    - Input bar keyboard (composer) tetap ada di bawah untuk kemudahan mengetik di HP/desktop (teks langsung dikirim ke terminal aktif).
+    - Multi-terminal tabs (`CMD #1`, `Claude #2`, `+ CMD`, `+ Claude`) beralih instan 0ms.
+    - Fitur upload gambar 📷, font stepper `A-`/`A+`, search buffer `🔍`, fullscreen `⛶`, tema warna `🎨`, dan macro chips tetap utuh dan aktif.
+  - Beban kode berkurang >850 baris, kecepatan muat halaman meningkat tajam, dan memori terminal-hub jauh lebih ringan.
+  - Gateway & CLI berjalan stabil menggunakan model `campur` via 9router port 20128.
+
+### 3. JARVIS 2.0 Tactical HUD & Voice - DIMATIKAN (OFF)
+- **Status:** Dimatikan permanen dari PM2 dan background process dihentikan atas permintaan user (2026-10-26). Port 3000, 3001, 3002 ditutup. Dump PM2 diperbarui. Folder `C:\Users\yonat\jarvis-hud\` dan checkpoint git `checkpoint-stable-v2` tetap tersimpan jika kelak dibutuhkan.
 
 ### 4. Cubefarm 3D Office Lokal - DIMATIKAN (OFF)
 
@@ -95,7 +186,16 @@ metadata:
     - Sinkronisasi Pengetahuan: `SOUL.md`, `memories/MEMORY.md`, dan `memories/USER.md` dipulihkan identik dengan repo `11111` (commit `8bc87bf`).
     - Verifikasi Fisik: `hermes -z "Katakan halo dalam 1 kata"` sukses dijawab `"Halo"` via 9Router.
 
-### 4. Produksi & Upload Batch 4 Video Viral Baru - SELESAI & SUDAH TERBIT DI FB REELS
+### 6. Hermes Agent Web Dashboard (Port 9119) di Server YN - SELESAI
+- **Hasil:**
+  - Service `hermes-dashboard` aktif di PM2 (`ecosystem.config.js`) menjalankan `hermes dashboard --port 9119 --host 127.0.0.1 --no-open --skip-build`.
+  - Gateway Server YN (`services/gateway.js`) melayani rute publik `/hermes/` dan subdomain `hermes.serveryn.my.id`.
+  - Mengatasi error 400 Host header dengan sanitasi `Host: 127.0.0.1:9119` & `x-forwarded-prefix: /hermes`.
+  - WebSocket proxy upgrade handler mendukung console (`/api/console`) dan PTY (`/api/pty`) dengan origin sanitization.
+  - Kartu Hermes Dashboard dipasang di `public/index.html` (Layanan Aktif & Featured Cards).
+  - Verifikasi Publik: `https://serveryn.my.id/hermes/` (HTTP 200 normal, assets bundle 200, `/api/profiles` sukses).
+
+### 7. Produksi & Upload Batch 4 Video Viral Baru - SELESAI & SUDAH TERBIT DI FB REELS
 - **Hasil:** 4 video otomatis selesai 100%, terunggah publik ke Facebook Reels, tersimpan di `C:\Users\yonat\Desktop\Hasil_Edit_Video\` dan live di `https://serveryn.my.id/gallery.html`:
   1. `Animasi_2D - Dunning Kruger Effect Kenapa Orang Kurang Paham Paling Berisik.mp4` (38.0s, 3.7MB) - Terbit Publik FB Reels.
   2. `Psikologi - Ben Franklin Effect Cara Cerdik Bikin Musuh Jadi Teman.mp4` (40.6s, 5.0MB) - Terbit Publik FB Reels.
@@ -233,6 +333,21 @@ metadata:
     - Launcher: `C:\Users\yonat\Desktop\AKTIFKAN_GOOGLE_VOICE.bat` & `Gboard_Mic.vbs`
     - Shortcut Desktop: `Google Voice (Spasi 2x).lnk`
     - Backup Repo: `Desktop\Claude\tools\gboard-mic\` (Commit `8150ebd` di GitHub `claude01`).
+
+### 13. Standardisasi & Editing Naskah Soal Ujian SD (Methodist-11) - AKTIF
+- **Hasil:**
+  - **Engine Claude 01 v00.1:** Terpasang resmi di `C:\Users\yonat\Desktop\CLAUDE\tools\editor_soal_claude01.py`, `audit_naskah_claude01.py`, dan `validasi_geometri_claude01.py`.
+  - **Aturan Baku Teruji Fisik:**
+    - Penamaan berkas murni `edit.docx` (larangan mutlak menambah label `OK`).
+    - Opsi menyamping 2x2: `a, b` hanging indent, `c, d` wajib spasi tunggal setelah titik tanpa tab (`c. Text`).
+    - Nama kelas default sub-kelas `A` (`VIA SD`, `VA SD`).
+    - Larangan memanggil `word.Quit()` pada semua script Word COM.
+    - Pembatas antar seksi (1 baris enter kosong + judul 1 kolom).
+  - **Naskah Selesai:**
+    1. `Bahasa Inggris 6 Winna edit.docx` - Selesai 100%, 2 halaman pas, 0 FAIL, 0 Geometri error. Tersalin ke share & bukti terkirim ke Telegram.
+    2. `Bahasa Inggris 5 Linda edit.docx` - Selesai 100%, 2 halaman F4 pas sempurna (versi editan pertama dipulihkan total). Halaman 1: Kop master resmi + Isian CP 2 (gambar aktivitas) + Isian CP 3 (5 kalimat acak). Halaman 2: Essay CP 4 (surat Dear Doctor + 5 soal respons Jb + Good Luck). Nilai 70, 0 FAIL, 0 Geometri error. Tersalin ke share & bukti album 2 halaman terkirim ke Telegram.
+
+
 
 
 

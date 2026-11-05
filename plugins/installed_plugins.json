@@ -54,21 +54,21 @@
     "skill-creator@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\claude-plugins-official\\skill-creator\\58267944f921",
-        "version": "58267944f921",
+        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\claude-plugins-official\\skill-creator\\fa4eb54397ee",
+        "version": "fa4eb54397ee",
         "installedAt": "2026-10-23T09:58:54.133Z",
-        "lastUpdated": "2026-10-23T23:32:59.580Z",
-        "gitCommitSha": "58267944f92187b7d6a1c822165c96c81c864806"
+        "lastUpdated": "2026-11-04T08:50:42.886Z",
+        "gitCommitSha": "fa4eb54397ee2faccb6940512a19c017cb1337f3"
       }
     ],
     "frontend-design@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\claude-plugins-official\\frontend-design\\58267944f921",
-        "version": "58267944f921",
+        "installPath": "C:\\Users\\yonat\\.claude\\plugins\\cache\\claude-plugins-official\\frontend-design\\1.1.1",
+        "version": "1.1.1",
         "installedAt": "2026-10-23T09:58:57.748Z",
-        "lastUpdated": "2026-10-23T23:32:59.572Z",
-        "gitCommitSha": "58267944f92187b7d6a1c822165c96c81c864806"
+        "lastUpdated": "2026-10-28T00:31:31.914Z",
+        "gitCommitSha": "f8c5e7a1dcb71b10cb74586224b5401f3de5db28"
       }
     ],
     "brand-building-skills@brand-building-skills": [
