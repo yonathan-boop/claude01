@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 5c02ae63-a9ad-47d1-a6b8-e92acf72fef9
-  modified: 2026-11-05T09:44:46.885Z
+  modified: 2026-11-05T10:04:34.787Z
 ---
 
 # Terminal Mobile Reader Engine (Mode Rapi)
@@ -29,7 +29,9 @@ Memisahkan proses eksekusi CLI (tetap berjalan di background ConPTY) dari lapisa
    - Tidak ada lagi kata menggantung di ujung kiri; seluruh poin mengalir dalam indentasi yang presisi.
    - Deteksi otomatis judul seksi bernomor (`2. Judul:`) menjadi header bergaris bawah.
    - Format prompt user (`> ...`) menjadi kartu chat bubble modern rata kanan.
-3. **Ergonomi Kontrol Mobile**:
-   - Tombol toggle `📄 Rapi` / `💻 Raw` di header kanan atas, tersimpan persisten di `localStorage`.
-   - Menghilangkan 4 tombol navigasi floating yang menutupi teks pada layar HP (< 480px) dan menggantinya dengan chip `⤒ Top` & `⤓ Bawah` di baris toolbar bawah.
-   - Menambatkan tombol pill unread `● Output Baru Masuk ↓` di pojok kanan bawah (`bottom: 12px; right: 14px;`) agar tidak lagi melayang di tengah teks.
+3. **Ergonomi Kontrol Mobile & Anti-Freeze Scroll**:
+   - **Touch Guard (`isUserTouchingReader`)**: Saat jari user menyentuh/menggeser layar, pembaruan DOM `innerHTML` dan auto-scroll seketika ditangguhkan agar browser tidak membatalkan gesture sentuh dan tidak menyentak posisi scroll kembali ke bawah saat AI sedang berpikir/streaming.
+   - **Throttling Render 250ms**: Mengurangi beban CPU dan mencegah thrashing DOM berulang saat spinner animasi CLI berjalan.
+   - **Pembersihan Artifak Kaki-kaki**: Memfilter petunjuk status bar interaktif CLI (`to cycle`, `esc to interrupt`, `ctrl+b`) dan memformat baris eksekusi tool CLI (`└ $ Start-Process...`, `curl.exe`) menjadi badge pill terisolasi (`.reader-tool-pill`) sehingga tidak merusak kartu chat prompt user.
+   - **Bottom Padding 85px**: Memberikan ruang lega di bagian bawah agar baris terakhir tidak terpotong oleh composer input bar.
+   - **Strict Wrap Merge**: Hanya menyambungkan baris yang benar-benar ditandai `item.isWrapped` oleh xterm untuk mencegah kata bertumpuk atau bercampur antar-baris.

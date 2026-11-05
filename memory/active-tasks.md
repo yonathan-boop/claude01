@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 3a0d34ce-b1fc-481d-a5ab-5c73327fc550
-  modified: 2026-11-05T09:45:43.182Z
+  modified: 2026-11-05T09:58:37.934Z
 ---
 
 # Status Pekerjaan 01 (Laptop / Infra & Tooling):
@@ -73,38 +73,25 @@ metadata:
       - **Tema Warna (🎨):** 4 preset tema (Obsidian Dark, Tokyo Night, Cyberpunk Neon, Matrix Green).
       - **Mode Fullscreen (⛶):** Sembunyikan address bar browser di HP untuk area kerja maksimal.
 
-### 2.5. Studio Karakter 3D (Cyber Humanoid LED Visor, X-Bot, RobotExpressive & Cinema Director) - SELESAI
+### 2.5. Studio Karakter 3D (RobotExpressive Native, X-Bot, & Cinema Director) - SELESAI
 - **Hasil:**
-  - Menyiapkan model standar industri glTF 2.0 Binary (`.glb`) dengan skinning halus dan kerangka tulang Mixamo:
-    1. **Cyber Humanoid (Model Pilihan Utama User - Opsi 1)**: Tubuh atletis stealth titanium 28k vertex dipadukan dengan layar kaca visor lengkung futuristik (gaya EVE / Daft Punk). Wajah dinamis dirender via HTML5 CanvasTexture emissive neon bercahaya 3.5x:
-       - Preset ekspresi wajah: Senyum Ceria `^ _ ^`, Bicara "Hai!" dengan gelombang suara berirama, Kedip `^ _ O`, Kaget `O _ O`, Mode Tempur `\ _ /`, Love `<3 _ <3`, dan Standby.
-       - Pilihan 5 palet warna neon (Cyan, Emerald, Magenta, Gold, Crimson) dan pengatur intensitas glow.
-       - Terpasang sebagai karakter utama di `/robot.html`.
+  - Menyiapkan model standar industri glTF 2.0 Binary (`.glb`) murni bawaan tanpa objek/stiker tempelan:
+    1. **RobotExpressive (Model Utama Terpilih)**: Maskot resmi Three.js WebGL paling populer di dunia. 100% murni geometri 3D bawaan (460 KB), 14 gerakan skeletal (Walk, Run, Dance, Wave, Punch, ThumbsUp, Jump, Yes, No, Sit, Stand), perbaikan bug duduk stabil (`sitDown`/`standUp`), dan 3 ekspresi wajah 3D bawaan (Surprised, Angry, Sad). Aktif di `/robot.html`.
     2. **X-Bot Humanoid**: 28.374 vertex, 67 tulang skeleton Mixamo, PBR physical material di `/robot-xbot.html`.
-    3. **RobotExpressive**: 14 animasi skeletal mecha.
-    4. **Cinema Director (`/robot-cinema.html`)**: Koreografi 10.5 detik terkalibrasi presisi:
+    3. **Cinema Director (`/robot-cinema.html`)**: Koreografi 10.5 detik terkalibrasi presisi:
        - Kamera awal 8.0 meter membelakangi robot.
        - Robot menoleh ke KANAN menatap lensa kamera.
        - Badan berputar ke KANAN 180° menghadap kamera.
        - Berlari maju 4.0 meter dan berhenti tepat di jarak 4.0 meter.
-       - Melambaikan tangan dan visor LED berbicara sambil memutar audio vokal "Hai!".
+       - Melambaikan tangan kanan ramah sambil memutar audio vokal "Hai!".
   - **Navigasi 1-Klik di Server YN**:
-    - Tombol `🤖 JARVIS` di header SSH Web (`/ssh/`) telah diganti menjadi `🤖 Robot` &rarr; langsung membuka `/robot.html` dalam 1 klik.
-    - Header dan Service Grid di Dashboard utama (`/`) disematkan tombol aksen cyan `🤖 Cyber Robot 3D ↗`.
+    - Tombol `🤖 Robot` di header SSH Web (`/ssh/`) langsung membuka `/robot.html` dalam 1 klik.
+    - Header dan Service Grid di Dashboard utama (`/`) disematkan launcher `🤖 Robot Studio 3D ↗`.
   - **Cinema Director 3D & Video Renderer (10.5 Detik)**:
-    - Koreografi Terkalibrasi Presisi:
-      - Jarak awal kamera 8.0 meter (robot berdiri diam membelakangi kamera).
-      - Menolehkan kepala ke KANAN melewati bahu kanan menatap tepat ke arah kamera.
-      - Seluruh badan berputar ke KANAN (searah jarum jam) 180° menghadap kamera.
-      - Berlari maju 4 meter mendekati kamera.
-      - Berhenti tepat di jarak 4.0 meter (Medium Shot proporsional, zero clipping).
-      - Melambaikan tangan kanan ramah sambil menyapa vokal "Hai!" (audio `hai.mp3`).
     - Tooling render otomatis: Playwright WebGL headless + FFmpeg audio muxing.
-    - Video MP4 ter-render: `C:\Users\yonat\Desktop\Hasil_Edit_Video\Robot_3D_Menoleh_Lari_Melambai_Hai.mp4` (1.62 MB).
-    - Status Kirim Telegram: Berhasil terkirim ke Telegram user (`5508090479`) via `@ServerYNSystem_bot`.
-    - Akses Web Stream: `https://serveryn.my.id/shorts/Robot_3D_Menoleh_Lari_Melambai_Hai.mp4` dan Studio `https://serveryn.my.id/robot-cinema.html`.
-  - File lokal: `C:\Users\yonat\dashboard\public\robot-cinema.html`, `robot-xbot.html`, `robot.html`.
-  - Akses publik live: `https://serveryn.my.id/robot-cinema.html` dan kartu launcher di `https://serveryn.my.id/`.
+    - Video MP4 ter-render bersih dengan RobotExpressive: `C:\Users\yonat\Desktop\Hasil_Edit_Video\Robot_3D_Menoleh_Lari_Melambai_Hai.mp4` (1.52 MB).
+    - Berhasil terkirim otomatis ke Telegram user (`5508090479`) via `@ServerYNSystem_bot`.
+    - Akses Web Stream: `https://serveryn.my.id/robot-cinema.html` dan `https://serveryn.my.id/robot.html`.
 
 ### 3. n8n Claude Code Agent di Server YN (`/chat`) - SELESAI
 - **Hasil:**
