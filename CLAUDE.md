@@ -103,6 +103,14 @@ Behavioral guidelines to reduce common LLM coding mistakes:
 - **Proactive Skill Harvesting**:
   - When observing a repeated workflow pattern (>=2 times), use `task-observer` and `skill-creator` to formalize it into a reusable skill.
 
+---
+
+## 9. Terra Advisor untuk Tugas Sulit
+- Luna tetap model executor utama dan menjalankan tools, file edits, serta perintah terminal.
+- Untuk tugas yang benar-benar sulit (arsitektur multi-file, debugging berlapis, analisis keamanan, atau keputusan teknis berisiko), gunakan `advisorModel` Terra bila advisor tool tersedia untuk meminta saran/rencana singkat sebelum eksekusi Luna.
+- Jangan panggil Terra untuk sapaan, pertanyaan sederhana, perubahan kecil, atau tugas yang sudah jelas; hindari panggilan advisor yang tidak perlu agar token hemat.
+- Jangan pernah mengganti endpoint Zyrouter, credential, default `gpt-6-luna`, atau model picker saat menjalankan pola ini.
+
 
 
 
